@@ -8,6 +8,8 @@ import java.sql.Timestamp;
  */
 public class Reuniones implements java.io.Serializable {
 
+
+	private static final long serialVersionUID = 1L;
 	private Integer idReunion;
 	private Users usersByAlumnoId;
 	private Users usersByProfesorId;

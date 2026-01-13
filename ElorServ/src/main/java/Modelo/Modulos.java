@@ -9,13 +9,15 @@ import java.util.Set;
  */
 public class Modulos implements java.io.Serializable {
 
+	
+	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private Ciclos ciclos;
 	private String nombre;
 	private String nombreEus;
 	private int horas;
 	private byte curso;
-	private Set horarioses = new HashSet(0);
+	private Set<Horarios> horarioses = new HashSet<Horarios>(0);
 
 	public Modulos() {
 	}
@@ -27,7 +29,7 @@ public class Modulos implements java.io.Serializable {
 		this.curso = curso;
 	}
 
-	public Modulos(Ciclos ciclos, String nombre, String nombreEus, int horas, byte curso, Set horarioses) {
+	public Modulos(Ciclos ciclos, String nombre, String nombreEus, int horas, byte curso, Set<Horarios> horarioses) {
 		this.ciclos = ciclos;
 		this.nombre = nombre;
 		this.nombreEus = nombreEus;
@@ -84,11 +86,11 @@ public class Modulos implements java.io.Serializable {
 		this.curso = curso;
 	}
 
-	public Set getHorarioses() {
+	public Set<Horarios> getHorarioses() {
 		return this.horarioses;
 	}
 
-	public void setHorarioses(Set horarioses) {
+	public void setHorarioses(Set<Horarios> horarioses) {
 		this.horarioses = horarioses;
 	}
 
