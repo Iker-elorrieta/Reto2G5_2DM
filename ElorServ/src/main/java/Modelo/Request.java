@@ -1,14 +1,14 @@
 package Modelo;
 
-import java.io.Serializable;
+
 import java.util.HashMap;
 
-public class Request  implements Serializable {
+public class Request   {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+
 	private String header;
 	private HashMap<String,Object> data;
 	
