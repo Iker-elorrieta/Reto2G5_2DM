@@ -18,8 +18,8 @@ public class Login extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
-    private JTextField textField;
-    private JPasswordField passwordField;
+    private JTextField textUsername;
+    private JPasswordField password;
     private Controlador controlador = new Controlador();
 
     public static void main(String[] args) {
@@ -43,10 +43,10 @@ public class Login extends JFrame {
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        textField = new JTextField();
-        textField.setBounds(191, 103, 143, 20);
-        contentPane.add(textField);
-        textField.setColumns(10);
+        textUsername = new JTextField();
+        textUsername.setBounds(191, 103, 143, 20);
+        contentPane.add(textUsername);
+        textUsername.setColumns(10);
 
         JLabel lblUsername = new JLabel("Username");
         lblUsername.setHorizontalAlignment(SwingConstants.CENTER);
@@ -58,9 +58,9 @@ public class Login extends JFrame {
         lblContraseña.setBounds(191, 166, 143, 14);
         contentPane.add(lblContraseña);
 
-        passwordField = new JPasswordField();
-        passwordField.setBounds(191, 191, 143, 20);
-        contentPane.add(passwordField);
+        password = new JPasswordField();
+        password.setBounds(191, 191, 143, 20);
+        contentPane.add(password);
 
         JButton btnLogin = new JButton("Iniciar Sesion");
         btnLogin.setActionCommand("LOGIN");
@@ -68,6 +68,6 @@ public class Login extends JFrame {
         btnLogin.setBounds(208, 254, 113, 23);
         contentPane.add(btnLogin);
 
-        controlador.setFields(textField, passwordField);
+        controlador.camposLogin(textUsername, password);
     }
 }

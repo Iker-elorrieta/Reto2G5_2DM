@@ -7,23 +7,24 @@ import java.util.HashMap;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import Modelo.Request;
-import Modelo.Response;
+import Modelo.EnviarDatos;
 import Modelo.SocketCliente;
 
 public class Controlador implements ActionListener {
 
-	private JTextField usernameField;
-	private JPasswordField passwordField;
+	private JTextField campoUsername;
+	private JPasswordField campoPassword;
 	private SocketCliente socketCliente;
+	private static final EnviarDatos enviarDatos = new EnviarDatos();
 
 	public Controlador() {
 		socketCliente = new SocketCliente();
 	}
-
-	public void setFields(JTextField usernameField, JPasswordField passwordField) {
-		this.usernameField = usernameField;
-		this.passwordField = passwordField;
+	
+	
+	public void camposLogin(JTextField campoUsername, JPasswordField campoPassword) {
+		this.campoUsername = campoUsername;
+		this.campoPassword = campoPassword;
 	}
 
 	@Override
@@ -32,7 +33,9 @@ public class Controlador implements ActionListener {
 
 		switch (comando) {
 		case "LOGIN":
-			login();
+			String username = (String) campoUsername.getText();
+			String password = (String) campoPassword.getText();
+			enviarDatos.login(username,password);
 			break;
 
 		default:
@@ -40,26 +43,6 @@ public class Controlador implements ActionListener {
 		}
 	}
 
-	private void login() {
-		Request request = new Request();
-		request.setHeader("LOGIN");
-
-		HashMap<String, Object> data = new HashMap<>();
-		data.put("username", usernameField.getText());
-		data.put("password", new String(passwordField.getPassword()));
-
-		request.setData(data);
-
-		Response response = socketCliente.enviarRequest(request);
-
-		System.out.println("Respuesta del servidor: " + response.getStatus() + " - " + response.getMessage());
-
-		if ("OK".equals(response.getStatus())) {
-			System.out.println("Login exitoso: " + response.getMessage());
-		} else {
-			System.out.println("Error en login: " + response.getMessage());
-		}
-	}
 
 	public void cerrarConexion() {
 		if (socketCliente != null) {

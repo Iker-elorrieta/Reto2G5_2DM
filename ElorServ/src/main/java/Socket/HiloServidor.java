@@ -1,97 +1,101 @@
 package Socket;
 
 import java.io.EOFException;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
+
 
 import Modelo.Metodos;
-import Modelo.Request;
-import Modelo.Response;
 import Modelo.Users;
 
 public class HiloServidor extends Thread {
 
-	private Metodos metodos = new Metodos();
-	private Socket socket;
+    private Metodos metodos = new Metodos();
+    private Socket socket;
+    private ObjectInputStream ois;
+    private ObjectOutputStream oos;
 
-	public HiloServidor(Socket socket) {
-		this.socket = socket;
-	}
+    public HiloServidor(Socket socket) {
+        this.socket = socket;
+    }
 
-	@Override
-	public void run() {
-		try (ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-				ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+    @Override
+    public void run() {
+        try {
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            ois = new ObjectInputStream(socket.getInputStream());
 
-			Object mensaje;
+            while (estaConectado()) {
+                Object obj = ois.readObject(); // BLOKEANTE
 
-			while ((mensaje = in.readObject()) != null) {
-				System.out.println("Recibido objeto: " + mensaje);
+                if (obj == null) break;
 
-				Object respuesta = procesarRequest(mensaje);
+                
+               // Map<String, Object> mensaje = (Map<String, Object>) obj;
 
-				out.writeObject(respuesta);
-				out.flush();
-			}
+                String comando = (String) obj;
 
-		} catch (EOFException e) {
-			System.out.println("Cliente desconectado normalmente");
-		} catch (IOException | ClassNotFoundException e) {
-			System.err.println("Error en conexión: " + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			try {
-				socket.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+                switch (comando) {
+                    case "LOGIN":
+                    	
+                        String username =(String)ois.readObject();
+                        String password =(String) ois.readObject();
 
-	private Object procesarRequest(Object mensaje) {
-		try {
-			if (!(mensaje instanceof Request)) {
-				return new Response("ERROR", "Formato de mensaje inválido", null);
-			}
+                        // hacemos login
+                        Users u = metodos.login(username, password);
 
-			Request request = (Request) mensaje;
-			String header = request.getHeader();
+                        Map<String, Object> respuesta = new HashMap<>();
+                        if (u != null) {
+                            respuesta.put("estado", "OK");
+                            respuesta.put("id", u.getId());
+                            respuesta.put("username", u.getUsername());
+                        } else {
+                            respuesta.put("estado", "ERROR");
+                            respuesta.put("mensaje", "login inválido");
+                        }
 
-			switch (header) {
-			case "LOGIN":
-				return login(request);
+                        oos.writeObject(respuesta);
+                        oos.flush();
+                        break;
 
-			default:
-				return new Response("ERROR", "Header no válido: " + header, null);
-			}
+                   
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new Response("ERROR", "Error al procesar request: " + e.getMessage(), null);
-		}
-	}
+                    default:
+                        System.out.println("Comando desconocido: " + comando);
+                }
+            }
+            System.out.println("Ya no estas conectado");
 
-	private Response login(Request request) {
+        } catch (EOFException e) {
+            System.out.println("Cliente cerró la conexión");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+        	try {
+                if (ois != null) ois.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-		String username = (String) request.getData().get("username");
-		String password = (String) request.getData().get("password");
+            try {
+                if (oos != null) oos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-		System.out.println("Intentando login con username: " + username + " y password: " + password);
+            try {
+                if (socket != null && !socket.isClosed()) socket.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-		if (username == null || password == null) {
-			System.out.println("Username o password es null");
-			return new Response("ERROR", "Username y password son requeridos", null);
-		}
 
-		Users user = metodos.login(username, password);
-
-		if (user != null) {
-			return new Response("OK", "Login exitoso", user);
-		} else {
-			return new Response("ERROR", "Usuario o contraseña incorrectos", null);
-		}
-	}
-
+    private boolean estaConectado() {
+        return socket != null && !socket.isClosed() && socket.isConnected();
+    }
 }
