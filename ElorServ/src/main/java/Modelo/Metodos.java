@@ -27,7 +27,6 @@ public class Metodos {
 		try {
 			session = sessionFactory.openSession();
 
-			// Solo usuarios con tipo_id = 3
 			String hql = "FROM Users u WHERE u.username = :username AND u.tipos.id = 3";
 			Query<Users> query = session.createQuery(hql, Users.class);
 			query.setParameter("username", usuario);
@@ -35,20 +34,13 @@ public class Metodos {
 			usuarioLog = query.uniqueResult();
 
 			if (usuarioLog != null) {
-				// --- Hash de la contraseña plana de la BBDD con el mismo estilo que el cliente
-				// ---
+				
 				try {
 					MessageDigest md = MessageDigest.getInstance("SHA");
 					byte[] dataBytes = usuarioLog.getPassword().getBytes();
 					md.update(dataBytes);
 					byte[] resumen = md.digest();
 					String passwordCifradaBBDD = new String(resumen);
-
-					// --- SYSO para debug ---
-					System.out.println("Contraseña plana BBDD: " + usuarioLog.getPassword());
-					System.out.println("Hash generado en servidor: " + passwordCifradaBBDD);
-					System.out.println("Hash recibido del cliente: " + contrasenaHasheada);
-					// -----------------------------------
 
 					// Comparación
 					if (!passwordCifradaBBDD.equals(contrasenaHasheada)) {
@@ -72,11 +64,6 @@ public class Metodos {
 		return usuarioLog;
 	}
 
-	public void cerrarSessionFactory() {
-		if (sessionFactory != null) {
-			sessionFactory.close();
-		}
-	}
 
 	public Users loginWeb(String username, String password) {
 	    Session session = null;

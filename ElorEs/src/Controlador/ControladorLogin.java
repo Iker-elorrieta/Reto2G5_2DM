@@ -11,16 +11,21 @@ import javax.swing.JTextField;
 import Modelo.EnviarDatos;
 import Modelo.SocketCliente;
 import Modelo.Users;
+import Vista.Login;
 
-public class Controlador implements ActionListener {
+
+public class ControladorLogin implements ActionListener {
 
 	private JTextField campoUsername;
 	private JPasswordField campoPassword;
 	private JLabel lblMensaje;
 	private SocketCliente socketCliente;
 	private static EnviarDatos enviarDatos = null;
-
-	public Controlador() {
+	private Login ventanaLogin;
+	
+	
+	public ControladorLogin(Login login) {
+		this.ventanaLogin = login;
 		try {
 			socketCliente = new SocketCliente();
 
@@ -69,6 +74,9 @@ public class Controlador implements ActionListener {
 
 				if (usuarioJson != null) {
 					lblMensaje.setText("Login exitoso!");
+				    ControladorMenu menuCtrl = new ControladorMenu(usuarioJson);
+				    menuCtrl.iniciarMenu();
+					ventanaLogin.dispose();
 				} else {
 					lblMensaje.setText("Usuario o contraseña incorrectos");
 				}

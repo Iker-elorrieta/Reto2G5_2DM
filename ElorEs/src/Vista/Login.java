@@ -1,12 +1,10 @@
 package Vista;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Controlador.Controlador;
+import Controlador.ControladorLogin;
 
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -21,20 +19,8 @@ public class Login extends JFrame {
     private JPanel contentPane;
     private JTextField textUsername;
     private JPasswordField password;
-    private Controlador controlador = new Controlador();
+    private ControladorLogin controlador = new ControladorLogin(this);
 
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    Login frame = new Login();
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
 
     public Login() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

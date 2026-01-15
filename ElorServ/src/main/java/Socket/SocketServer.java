@@ -8,7 +8,7 @@ public class SocketServer {
 
 	public static void iniciar() {
         try (ServerSocket serverSocket = new ServerSocket(6767)) {
-            System.out.println("Servidor soket eskuchando en 6767" );
+            System.out.println("Servidor socket en el puerto 6767" );
 
             while (true) {
                 Socket socket = serverSocket.accept();

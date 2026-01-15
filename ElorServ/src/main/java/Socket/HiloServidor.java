@@ -24,7 +24,7 @@ public class HiloServidor extends Thread {
 		try {
 
 			oos = new ObjectOutputStream(socket.getOutputStream());
-			oos.flush(); // OBLIGATORIO pe
+			oos.flush(); 
 
 			ois = new ObjectInputStream(socket.getInputStream());
 
@@ -44,16 +44,18 @@ public class HiloServidor extends Thread {
 					String username = (String) ois.readObject();
 					String password = (String) ois.readObject();
 
-					Users u = metodos.login(username, password);
+					Users u = metodos.loginCliente(username, password);
 					String respuesta = metodos.crearJson(u);
 					oos.writeObject(respuesta);
 					oos.flush();
+					break;
+				default:
 					break;
 				}
 			}
 
 		} catch (EOFException e) {
-			System.out.println("Kliente serró la koneksion");
+			System.out.println("Clience cerro conexion");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
