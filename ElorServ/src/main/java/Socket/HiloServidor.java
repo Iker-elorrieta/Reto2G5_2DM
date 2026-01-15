@@ -45,7 +45,8 @@ public class HiloServidor extends Thread {
 					String password = (String) ois.readObject();
 
 					Users u = metodos.login(username, password);
-					oos.writeObject(u);
+					String respuesta = metodos.crearJson(u);
+					oos.writeObject(respuesta);
 					oos.flush();
 					break;
 				}

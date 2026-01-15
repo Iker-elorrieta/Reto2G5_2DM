@@ -40,9 +40,10 @@ public class Controlador implements ActionListener {
 			String username = campoUsername.getText();
 			String password = new String(campoPassword.getPassword());
 			System.out.println("Controlador: " + username + " " + password);
-			Users u = enviarDatos.login(username, password);
+			String jsonUsuario = enviarDatos.login(username, password);
+			Users usuarioJson = enviarDatos.leerJson(jsonUsuario, Users.class);
 			
-			System.out.println("Usuario recibido: " + u.getUsername() + " " + u.getPassword());
+			System.out.println("Usuario recibido: " + usuarioJson.getUsername() + " " + usuarioJson.getPassword() + usuarioJson.getId());
 
 			break;
 
