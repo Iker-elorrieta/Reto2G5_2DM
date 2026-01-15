@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
+import java.awt.Color;
 
 public class Login extends JFrame {
 
@@ -69,5 +70,14 @@ public class Login extends JFrame {
         contentPane.add(btnLogin);
 
         controlador.camposLogin(textUsername, password);
+        
+        JLabel lblPassIncorrecta = new JLabel("");
+        lblPassIncorrecta.setHorizontalAlignment(SwingConstants.CENTER);
+        lblPassIncorrecta.setForeground(new Color(255, 0, 0));
+        lblPassIncorrecta.setBounds(154, 229, 221, 14);
+        contentPane.add(lblPassIncorrecta);
+        
+        controlador.setLblMensaje(lblPassIncorrecta);
+
     }
 }

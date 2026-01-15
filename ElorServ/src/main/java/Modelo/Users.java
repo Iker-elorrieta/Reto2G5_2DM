@@ -41,11 +41,11 @@ public class Users implements java.io.Serializable {
 	private Timestamp createdAt;
 	@Expose
 	private Timestamp updatedAt;
-	
-	private transient  Set<Matriculaciones> matriculacioneses = new HashSet<Matriculaciones>(0);
-	private transient  Set<Reuniones> reunionesesForAlumnoId = new HashSet<Reuniones>(0);
-	private transient  Set<Horarios> horarioses = new HashSet<Horarios>(0);
-	private transient  Set<Reuniones>reunionesesForProfesorId = new HashSet<Reuniones>(0);
+
+	private Set<Matriculaciones> matriculacioneses = new HashSet<Matriculaciones>(0);
+	private Set<Reuniones> reunionesesForAlumnoId = new HashSet<Reuniones>(0);
+	private Set<Horarios> horarioses = new HashSet<Horarios>(0);
+	private Set<Reuniones> reunionesesForProfesorId = new HashSet<Reuniones>(0);
 
 	public Users() {
 	}
@@ -59,8 +59,8 @@ public class Users implements java.io.Serializable {
 
 	public Users(Tipos tipos, String email, String username, String password, String nombre, String apellidos,
 			String dni, String direccion, String telefono1, String telefono2, String argazkiaUrl, Timestamp createdAt,
-			Timestamp updatedAt, Set<Matriculaciones> matriculacioneses, Set<Reuniones> reunionesesForAlumnoId, Set<Horarios> horarioses,
-			Set<Reuniones> reunionesesForProfesorId) {
+			Timestamp updatedAt, Set<Matriculaciones> matriculacioneses, Set<Reuniones> reunionesesForAlumnoId,
+			Set<Horarios> horarioses, Set<Reuniones> reunionesesForProfesorId) {
 		this.tipos = tipos;
 		this.email = email;
 		this.username = username;

@@ -2,7 +2,9 @@ package Controlador;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.MessageDigest;
 
+import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -14,6 +16,7 @@ public class Controlador implements ActionListener {
 
 	private JTextField campoUsername;
 	private JPasswordField campoPassword;
+	private JLabel lblMensaje;
 	private SocketCliente socketCliente;
 	private static EnviarDatos enviarDatos = null;
 
@@ -32,23 +35,49 @@ public class Controlador implements ActionListener {
 		this.campoPassword = campoPassword;
 	}
 
+	public void setLblMensaje(JLabel lblMensaje) {
+		this.lblMensaje = lblMensaje;
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String comando = e.getActionCommand();
 		switch (comando) {
 		case "LOGIN":
+			if (campoUsername.getText().isEmpty() || campoPassword.getPassword().length == 0) {
+				String faltan = "";
+				if (campoUsername.getText().isEmpty())
+					faltan += "Username ";
+				if (campoPassword.getPassword().length == 0)
+					faltan += "Contraseña";
+				lblMensaje.setText("Falta: " + faltan);
+				return;
+			}
+
 			String username = campoUsername.getText();
 			String password = new String(campoPassword.getPassword());
-			System.out.println("Controlador: " + username + " " + password);
-			String jsonUsuario = enviarDatos.login(username, password);
-			Users usuarioJson = enviarDatos.leerJson(jsonUsuario, Users.class);
-			
-			System.out.println("Usuario recibido: " + usuarioJson.getUsername() + " " + usuarioJson.getPassword() + usuarioJson.getId());
 
+			try {
+				MessageDigest md = MessageDigest.getInstance("SHA");
+				byte dataBytes[] = password.getBytes();
+				md.update(dataBytes);
+				byte resumen[] = md.digest();
+				String passwordCifrada = new String(resumen);
+
+				String jsonUsuario = enviarDatos.login(username, passwordCifrada);
+				Users usuarioJson = enviarDatos.leerJson(jsonUsuario, Users.class);
+
+				if (usuarioJson != null) {
+					lblMensaje.setText("Login exitoso!");
+				} else {
+					lblMensaje.setText("Usuario o contraseña incorrectos");
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				lblMensaje.setText("Error al cifrar contraseña");
+				return;
+			}
 			break;
-
-		default:
-			System.out.println("Comando no reconocido: " + comando);
 		}
 	}
 

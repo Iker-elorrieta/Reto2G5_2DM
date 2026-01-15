@@ -1,5 +1,6 @@
 package Modelo;
 
+import java.security.MessageDigest;
 import java.util.ArrayList;
 
 import org.hibernate.Session;
@@ -17,26 +18,50 @@ public class Metodos {
 
 	public Metodos() {
 		sessionFactory = HibernateUtil.getSessionFactory();
-		this.gson = new GsonBuilder()
-				.excludeFieldsWithoutExposeAnnotation()
-				.create();
+		this.gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 	}
 
-	public Users login(String usuario, String contrasena) {
+	public Users login(String usuario, String contrasenaHasheada) {
 		Session session = null;
 		Users usuarioLog = null;
-		
+
 		try {
 			session = sessionFactory.openSession();
-			// Usar parámetros para evitar SQL Injection
-			Query<Users> query = session.createQuery("FROM Users WHERE username = :username AND password = :password",
-					Users.class);
+
+			// Solo usuarios con tipo_id = 3
+			String hql = "FROM Users u WHERE u.username = :username AND u.tipos.id = 3";
+			Query<Users> query = session.createQuery(hql, Users.class);
 			query.setParameter("username", usuario);
-			query.setParameter("password", contrasena);
 
 			usuarioLog = query.uniqueResult();
-			
-		
+
+			if (usuarioLog != null) {
+				// --- Hash de la contraseña plana de la BBDD con el mismo estilo que el cliente
+				// ---
+				try {
+					MessageDigest md = MessageDigest.getInstance("SHA");
+					byte[] dataBytes = usuarioLog.getPassword().getBytes();
+					md.update(dataBytes);
+					byte[] resumen = md.digest();
+					String passwordCifradaBBDD = new String(resumen);
+
+					// --- SYSO para debug ---
+					System.out.println("Contraseña plana BBDD: " + usuarioLog.getPassword());
+					System.out.println("Hash generado en servidor: " + passwordCifradaBBDD);
+					System.out.println("Hash recibido del cliente: " + contrasenaHasheada);
+					// -----------------------------------
+
+					// Comparación
+					if (!passwordCifradaBBDD.equals(contrasenaHasheada)) {
+						usuarioLog = null; // contraseña incorrecta
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+					usuarioLog = null;
+				}
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -73,10 +98,9 @@ public class Metodos {
 
 		return usuarios;
 	}
-	
+
 	public String crearJson(Object objeto) {
 		return gson.toJson(objeto);
 	}
-	
-	
+
 }
