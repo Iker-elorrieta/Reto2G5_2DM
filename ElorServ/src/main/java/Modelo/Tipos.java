@@ -14,7 +14,7 @@ public class Tipos implements java.io.Serializable {
 	private Integer id;
 	private String name;
 	private String nameEu;
-	private Set<Users> userses = new HashSet<Users>(0);
+	private transient  Set<Users> userses = new HashSet<Users>(0);
 
 	public Tipos() {
 	}

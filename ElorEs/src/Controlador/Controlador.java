@@ -2,26 +2,31 @@ package Controlador;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import Modelo.EnviarDatos;
 import Modelo.SocketCliente;
+import Modelo.Users;
 
 public class Controlador implements ActionListener {
 
 	private JTextField campoUsername;
 	private JPasswordField campoPassword;
 	private SocketCliente socketCliente;
-	private static final EnviarDatos enviarDatos = new EnviarDatos();
+	private static EnviarDatos enviarDatos = null;
 
 	public Controlador() {
-		socketCliente = new SocketCliente();
+		try {
+			socketCliente = new SocketCliente();
+
+			enviarDatos = new EnviarDatos(socketCliente.getOut(), socketCliente.getIn());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-	
-	
+
 	public void camposLogin(JTextField campoUsername, JPasswordField campoPassword) {
 		this.campoUsername = campoUsername;
 		this.campoPassword = campoPassword;
@@ -30,19 +35,21 @@ public class Controlador implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String comando = e.getActionCommand();
-
 		switch (comando) {
 		case "LOGIN":
-			String username = (String) campoUsername.getText();
-			String password = (String) campoPassword.getText();
-			enviarDatos.login(username,password);
+			String username = campoUsername.getText();
+			String password = new String(campoPassword.getPassword());
+			System.out.println("Controlador: " + username + " " + password);
+			Users u = enviarDatos.login(username, password);
+			
+			System.out.println("Usuario recibido: " + u.getUsername() + " " + u.getPassword());
+
 			break;
 
 		default:
 			System.out.println("Comando no reconocido: " + comando);
 		}
 	}
-
 
 	public void cerrarConexion() {
 		if (socketCliente != null) {

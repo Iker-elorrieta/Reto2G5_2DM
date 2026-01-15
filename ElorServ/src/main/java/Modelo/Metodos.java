@@ -25,9 +25,7 @@ public class Metodos {
             query.setParameter("password", contrasena);
             
             usuarioLog = query.uniqueResult();
-            
-            System.out.println("Despues de query:"+usuarioLog.getId());
-           
+                       
             
         } catch (Exception e) {
             e.printStackTrace();

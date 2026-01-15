@@ -17,7 +17,7 @@ public class Modulos implements java.io.Serializable {
 	private String nombreEus;
 	private int horas;
 	private byte curso;
-	private Set<Horarios> horarioses = new HashSet<Horarios>(0);
+	private transient  Set<Horarios> horarioses = new HashSet<Horarios>(0);
 
 	public Modulos() {
 	}

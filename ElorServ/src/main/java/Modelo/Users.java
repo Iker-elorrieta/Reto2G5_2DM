@@ -26,10 +26,10 @@ public class Users implements java.io.Serializable {
 	private String argazkiaUrl;
 	private Timestamp createdAt;
 	private Timestamp updatedAt;
-	private Set<Matriculaciones> matriculacioneses = new HashSet<Matriculaciones>(0);
-	private Set<Reuniones> reunionesesForAlumnoId = new HashSet<Reuniones>(0);
-	private Set<Horarios> horarioses = new HashSet<Horarios>(0);
-	private Set<Reuniones>reunionesesForProfesorId = new HashSet<Reuniones>(0);
+	private transient  Set<Matriculaciones> matriculacioneses = new HashSet<Matriculaciones>(0);
+	private transient  Set<Reuniones> reunionesesForAlumnoId = new HashSet<Reuniones>(0);
+	private transient  Set<Horarios> horarioses = new HashSet<Horarios>(0);
+	private transient  Set<Reuniones>reunionesesForProfesorId = new HashSet<Reuniones>(0);
 
 	public Users() {
 	}
