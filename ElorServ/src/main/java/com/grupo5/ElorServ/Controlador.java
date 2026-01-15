@@ -1,6 +1,6 @@
 package com.grupo5.ElorServ;
 
-import java.util.ArrayList;
+
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,13 +16,16 @@ public class Controlador {
     private Metodos metodos = new Metodos();
 
     @GetMapping("/login")
-    public Users login(@RequestParam String username, @RequestParam String password) {
-        return metodos.login(username, password);
+    public String login(@RequestParam String username, @RequestParam String password) {
+        Users usuario = metodos.loginWeb(username, password);
+        
+        if (usuario != null) {
+            return metodos.crearJson(usuario);
+        } else {
+            return "{\"error\": \"Usuario o contraseña incorrectos\"}";
+        }
     }
     
-    @GetMapping
-    public ArrayList<Users> getAllUsers() {
-    	return metodos.getAllUsers();
-	}
+
 }
 

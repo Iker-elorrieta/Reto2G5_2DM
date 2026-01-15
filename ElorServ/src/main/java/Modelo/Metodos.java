@@ -1,7 +1,6 @@
 package Modelo;
 
 import java.security.MessageDigest;
-import java.util.ArrayList;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -21,7 +20,7 @@ public class Metodos {
 		this.gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 	}
 
-	public Users login(String usuario, String contrasenaHasheada) {
+	public Users loginCliente(String usuario, String contrasenaHasheada) {
 		Session session = null;
 		Users usuarioLog = null;
 
@@ -79,25 +78,31 @@ public class Metodos {
 		}
 	}
 
-	public ArrayList<Users> getAllUsers() {
-		Session session = null;
-		ArrayList<Users> usuarios = new ArrayList<>();
+	public Users loginWeb(String username, String password) {
+	    Session session = null;
+	    Users usuarioLog = null;
 
-		try {
-			session = sessionFactory.openSession();
-			Query<Users> query = session.createQuery("FROM Users", Users.class);
-			usuarios = (ArrayList<Users>) query.list();
+	    try {
+	        session = sessionFactory.openSession();
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (session != null) {
-				session.close();
-			}
-		}
+	        String hql = "FROM Users u WHERE u.username = :username AND u.password = :password";
+	        Query<Users> query = session.createQuery(hql, Users.class);
+	        query.setParameter("username", username);
+	        query.setParameter("password", password);
 
-		return usuarios;
+	        usuarioLog = query.uniqueResult();
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        if (session != null) {
+	            session.close();
+	        }
+	    }
+
+	    return usuarioLog;
 	}
+
 
 	public String crearJson(Object objeto) {
 		return gson.toJson(objeto);
