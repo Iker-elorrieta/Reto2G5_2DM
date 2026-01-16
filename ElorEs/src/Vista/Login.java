@@ -1,69 +1,91 @@
 package Vista;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import Controlador.ControladorLogin;
 
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import javax.swing.JPasswordField;
-import javax.swing.JButton;
-import java.awt.Color;
+import java.awt.*;
 
 public class Login extends JFrame {
 
-    private static final long serialVersionUID = 1L;
-    private JPanel contentPane;
-    private JTextField textUsername;
-    private JPasswordField password;
-    private ControladorLogin controlador = new ControladorLogin(this);
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField textUsername;
+	private JPasswordField password;
+	private ControladorLogin controlador = new ControladorLogin(this);
 
+	public Login() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 550, 500);
 
-    public Login() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 551, 391);
-        contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        setContentPane(contentPane);
-        contentPane.setLayout(null);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(30, 50, 30, 50));
+		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+		Estilos.panelFondo(contentPane);
+		setContentPane(contentPane);
 
-        textUsername = new JTextField();
-        textUsername.setBounds(191, 103, 143, 20);
-        contentPane.add(textUsername);
-        textUsername.setColumns(10);
+		// ===== LOGO =====
+		
 
-        JLabel lblUsername = new JLabel("Username");
-        lblUsername.setHorizontalAlignment(SwingConstants.CENTER);
-        lblUsername.setBounds(191, 78, 143, 14);
-        contentPane.add(lblUsername);
+		JLabel lblLogo = new JLabel();
+		lblLogo.setIcon(new ImageIcon(getClass().getResource("/logo.png")));
+		lblLogo.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblLogo.setPreferredSize(new Dimension(100, 100));
+		
+		contentPane.add(lblLogo);
+		contentPane.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        JLabel lblContraseña = new JLabel("Contraseña");
-        lblContraseña.setHorizontalAlignment(SwingConstants.CENTER);
-        lblContraseña.setBounds(191, 166, 143, 14);
-        contentPane.add(lblContraseña);
+		// ===== TÍTULO =====
+		JLabel lblTitulo = new JLabel("INICIO DE SESIÓN");
+		lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+		Estilos.labelTitulo(lblTitulo);
+		contentPane.add(lblTitulo);
+		contentPane.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        password = new JPasswordField();
-        password.setBounds(191, 191, 143, 20);
-        contentPane.add(password);
+		// ===== USUARIO =====
+		JLabel lblUsername = new JLabel("Usuario");
+		lblUsername.setAlignmentX(Component.CENTER_ALIGNMENT);
+		Estilos.labelNormal(lblUsername);
+		contentPane.add(lblUsername);
+		contentPane.add(Box.createRigidArea(new Dimension(0,5)));
 
-        JButton btnLogin = new JButton("Iniciar Sesion");
-        btnLogin.setActionCommand("LOGIN");
-        btnLogin.addActionListener(controlador);
-        btnLogin.setBounds(208, 254, 113, 23);
-        contentPane.add(btnLogin);
+		textUsername = new JTextField();
+		textUsername.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
+		Estilos.input(textUsername);
+		contentPane.add(textUsername);
+		contentPane.add(Box.createRigidArea(new Dimension(0, 15)));
 
-        controlador.camposLogin(textUsername, password);
-        
-        JLabel lblPassIncorrecta = new JLabel("");
-        lblPassIncorrecta.setHorizontalAlignment(SwingConstants.CENTER);
-        lblPassIncorrecta.setForeground(new Color(255, 0, 0));
-        lblPassIncorrecta.setBounds(154, 229, 221, 14);
-        contentPane.add(lblPassIncorrecta);
-        
-        controlador.setLblMensaje(lblPassIncorrecta);
+		// ===== CONTRASEÑA =====
+		JLabel lblContraseña = new JLabel("Contraseña");
+		lblContraseña.setAlignmentX(Component.CENTER_ALIGNMENT);
+		Estilos.labelNormal(lblContraseña);
+		contentPane.add(lblContraseña);
+		contentPane.add(Box.createRigidArea(new Dimension(0,5)));
 
-    }
+		password = new JPasswordField();
+		password.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
+		Estilos.input(password);
+		contentPane.add(password);
+		contentPane.add(Box.createRigidArea(new Dimension(0, 15)));
+
+		// ===== MENSAJE ERROR =====
+		JLabel lblPassIncorrecta = new JLabel("");
+		lblPassIncorrecta.setAlignmentX(Component.CENTER_ALIGNMENT);
+		Estilos.labelError(lblPassIncorrecta);
+		contentPane.add(lblPassIncorrecta);
+		contentPane.add(Box.createRigidArea(new Dimension(0, 20)));
+
+		// ===== BOTÓN LOGIN =====
+		JButton btnLogin = new JButton("Iniciar Sesión");
+		btnLogin.setAlignmentX(Component.CENTER_ALIGNMENT);
+		Estilos.botonMenu(btnLogin);
+		btnLogin.setActionCommand("LOGIN");
+		btnLogin.addActionListener(controlador);
+		contentPane.add(btnLogin);
+
+		// ===== CONTROLADOR =====
+		controlador.camposLogin(textUsername, password);
+		controlador.setLblMensaje(lblPassIncorrecta);
+	}
 }
