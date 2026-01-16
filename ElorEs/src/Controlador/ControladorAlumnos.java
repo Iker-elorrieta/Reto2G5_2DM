@@ -1,14 +1,16 @@
 package Controlador;
 
-import Modelo.Users;
+import Vista.Alumnos;
 
 public class ControladorAlumnos {
 
-	public ControladorAlumnos(Users user) {
-	}
-	
-	public void iniciarAlumnos() {
-		// TODO Auto-generated method stub
-		
-	}
+    private Alumnos ventana;
+
+    public ControladorAlumnos() {
+        ventana = new Alumnos();
+    }
+
+    public void iniciarAlumnos() {
+        ventana.setVisible(true);
+    }
 }

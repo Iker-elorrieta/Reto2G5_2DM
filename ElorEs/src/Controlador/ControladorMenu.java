@@ -33,11 +33,31 @@ public class ControladorMenu implements ActionListener {
 			loginCtrl.iniciarLogin();
 			menu.dispose();
 			break;
-		case "ALUMNOS":
-			ControladorAlumnos alumnosCtrl = new ControladorAlumnos(user);
-			alumnosCtrl.iniciarAlumnos();
-			menu.dispose();
-			break;
+		 case "ALUMNOS":
+	            ControladorAlumnos alumnosCtrl = new ControladorAlumnos();
+	            alumnosCtrl.iniciarAlumnos();
+	            menu.setVisible(false); // no lo cerramos, solo lo escondemos
+	            break;
+
+	        case "HORARIOS":
+	            ControladorHorarios horariosCtrl = new ControladorHorarios();
+	            horariosCtrl.iniciarHorarios();
+	            menu.setVisible(false);
+	            break;
+
+	        case "OTROS-HORARIOS":
+	            ControladorOtrosHorarios otrosCtrl = new ControladorOtrosHorarios();
+	            otrosCtrl.iniciarOtrosHorarios();
+	            menu.setVisible(false);
+	            break;
+
+	        case "REUNIONES":
+	            ControladorReuniones reunionesCtrl = new ControladorReuniones();
+	            reunionesCtrl.iniciarReuniones();
+	            menu.setVisible(false);
+	            break;
+	    
+		
 		/*
 		 * if (campoUsername.getText().isEmpty() || campoPassword.getPassword().length
 		 * == 0) { String faltan = ""; if (campoUsername.getText().isEmpty()) faltan +=
