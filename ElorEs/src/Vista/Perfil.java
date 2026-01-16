@@ -29,7 +29,7 @@ public class Perfil extends JFrame {
 
 
     public Perfil() {
-        setTitle("Perfil del Profesor");
+        setTitle("Perfil - ???"  );
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 500, 400);
 
@@ -172,6 +172,7 @@ public class Perfil extends JFrame {
     }
 
     // ===== GETTERS =====
+    public JPanel getContentPane() {return contentPane;}
     public JLabel getLblNombre() { return lblNombre; }
     public JLabel getLblApellidos() { return lblApellidos; }
     public JLabel getLblDni() { return lblDni; }
@@ -216,5 +217,9 @@ public class Perfil extends JFrame {
         } catch (Exception e) {
             System.out.println("Error cargando la imagen: " + e.getMessage());
         }
+    }
+    
+    public void setTitleUsuario(String nombre, String apellidos) {
+        setTitle("Perfil - " + nombre + " " + apellidos);
     }
 }

@@ -16,6 +16,7 @@ public class Login extends JFrame {
 	private ControladorLogin controlador = new ControladorLogin(this);
 
 	public Login() {
+		setTitle("ElorEs - Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 550, 500);
 

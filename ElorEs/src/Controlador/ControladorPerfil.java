@@ -37,6 +37,8 @@ public class ControladorPerfil implements ActionListener {
         perfil.getLblDireccion().setText(user.getDireccion());
 
         perfil.cargarImagen(user.getArgazkiaUrl());
+        
+        perfil.setTitleUsuario(user.getNombre(), user.getApellidos());
     }
 
 
