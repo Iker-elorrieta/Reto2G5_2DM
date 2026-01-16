@@ -17,7 +17,7 @@ public class Metodos {
 
 	public Metodos() {
 		sessionFactory = HibernateUtil.getSessionFactory();
-		this.gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+		this.gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls().create();
 	}
 
 	public Users loginCliente(String usuario, String contrasenaHasheada) {
@@ -34,7 +34,7 @@ public class Metodos {
 			usuarioLog = query.uniqueResult();
 
 			if (usuarioLog != null) {
-				
+
 				try {
 					MessageDigest md = MessageDigest.getInstance("SHA");
 					byte[] dataBytes = usuarioLog.getPassword().getBytes();
@@ -64,32 +64,34 @@ public class Metodos {
 		return usuarioLog;
 	}
 
-
 	public Users loginWeb(String username, String password) {
-	    Session session = null;
-	    Users usuarioLog = null;
+		Session session = null;
+		Users usuarioLog = null;
 
-	    try {
-	        session = sessionFactory.openSession();
+		try {
+			session = sessionFactory.openSession();
 
-	        String hql = "FROM Users u WHERE u.username = :username AND u.password = :password";
-	        Query<Users> query = session.createQuery(hql, Users.class);
-	        query.setParameter("username", username);
-	        query.setParameter("password", password);
+			String hql = "FROM Users u JOIN FETCH u.tipos WHERE u.username = :username AND u.password = :password";
+			Query<Users> query = session.createQuery(hql, Users.class);
+			query.setParameter("username", username);
+			query.setParameter("password", password);
 
-	        usuarioLog = query.uniqueResult();
+			usuarioLog = query.uniqueResult();
 
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        if (session != null) {
-	            session.close();
-	        }
-	    }
+			if (usuarioLog != null) {
+				usuarioLog.getTipos().getId();
+			}
 
-	    return usuarioLog;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+
+		return usuarioLog;
 	}
-
 
 	public String crearJson(Object objeto) {
 		return gson.toJson(objeto);
