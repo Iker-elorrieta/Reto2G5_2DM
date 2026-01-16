@@ -11,6 +11,8 @@ import java.net.URI;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import Controlador.ControladorMenu;
+
 public class Menu extends JFrame {
 
     private static final long serialVersionUID = 1L;
@@ -22,6 +24,9 @@ public class Menu extends JFrame {
 
     // Variable para guardar la imagen original
     private Image imgOriginal;
+    
+	private ControladorMenu controlador = new ControladorMenu(this, null);
+
 
     public Menu() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -108,25 +113,25 @@ public class Menu extends JFrame {
         contentPane.add(body, BorderLayout.CENTER);
 
         // Botones del body
-        JButton btnConsultarAlumnos = new JButton("Consultar Alumnos");
+        JButton btnAlumnos = new JButton("Consultar Alumnos");
         JButton btnHorarios = new JButton("Consultar Horarios");
         JButton btnOtrosHorarios = new JButton("Consultar Otros Horarios");
         JButton btnReuniones = new JButton("Gestionar Reuniones");
 
         // Aplicar estilos
-        Estilos.botonMenu(btnConsultarAlumnos);
+        Estilos.botonMenu(btnAlumnos);
         Estilos.botonMenu(btnHorarios);
         Estilos.botonMenu(btnOtrosHorarios);
         Estilos.botonMenu(btnReuniones);
 
         // Alineación y separación
-        btnConsultarAlumnos.setAlignmentX(JButton.CENTER_ALIGNMENT);
+        btnAlumnos.setAlignmentX(JButton.CENTER_ALIGNMENT);
         btnHorarios.setAlignmentX(JButton.CENTER_ALIGNMENT);
         btnOtrosHorarios.setAlignmentX(JButton.CENTER_ALIGNMENT);
         btnReuniones.setAlignmentX(JButton.CENTER_ALIGNMENT);
 
         body.add(Box.createVerticalGlue());
-        body.add(btnConsultarAlumnos);
+        body.add(btnAlumnos);
         body.add(Box.createVerticalStrut(20));
         body.add(btnHorarios);
         body.add(Box.createVerticalStrut(20));
@@ -134,6 +139,29 @@ public class Menu extends JFrame {
         body.add(Box.createVerticalStrut(20));
         body.add(btnReuniones);
         body.add(Box.createVerticalGlue());
+        
+        
+        
+        // ===== ASIGNAR ACTION COMMANDS Y LISTENERS =====
+        
+        btnAlumnos.setActionCommand("ALUMNOS");
+		btnAlumnos.addActionListener(controlador);
+		
+		btnHorarios.setActionCommand("HORARIOS");
+		btnHorarios.addActionListener(controlador);
+		
+		btnOtrosHorarios.setActionCommand("OTROSHORARIOS");
+		btnOtrosHorarios.addActionListener(controlador);
+		
+		btnReuniones.setActionCommand("REUNIONES");
+		btnReuniones.addActionListener(controlador);
+		
+		btnPerfil.setActionCommand("PERFIL");
+		btnPerfil.addActionListener(controlador);
+		
+		btnLogout.setActionCommand("LOGOUT");
+		btnLogout.addActionListener(controlador);
+		
     }
 
     // ===== MÉTODOS PARA ASIGNAR DATOS DESDE EL CONTROLADOR =====

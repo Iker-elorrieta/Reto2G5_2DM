@@ -12,6 +12,7 @@ import Modelo.EnviarDatos;
 import Modelo.SocketCliente;
 import Modelo.Users;
 import Vista.Login;
+import Vista.Menu;
 
 
 public class ControladorLogin implements ActionListener {
@@ -22,7 +23,7 @@ public class ControladorLogin implements ActionListener {
 	private SocketCliente socketCliente;
 	private static EnviarDatos enviarDatos = null;
 	private Login ventanaLogin;
-	
+	private Menu menu;
 	
 	public ControladorLogin(Login login) {
 		this.ventanaLogin = login;
@@ -74,7 +75,7 @@ public class ControladorLogin implements ActionListener {
 
 				if (usuarioJson != null) {
 					lblMensaje.setText("Login exitoso!");
-				    ControladorMenu menuCtrl = new ControladorMenu(usuarioJson);
+				    ControladorMenu menuCtrl = new ControladorMenu(menu, usuarioJson);
 				    menuCtrl.iniciarMenu();
 					ventanaLogin.dispose();
 				} else {
@@ -87,6 +88,10 @@ public class ControladorLogin implements ActionListener {
 			}
 			break;
 		}
+	}
+	
+	public void iniciarLogin() {
+		ventanaLogin.setVisible(true);
 	}
 
 	public void cerrarConexion() {
