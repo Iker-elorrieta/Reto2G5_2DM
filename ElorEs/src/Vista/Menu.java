@@ -25,10 +25,10 @@ public class Menu extends JFrame {
     // Variable para guardar la imagen original
     private Image imgOriginal;
     
-	private ControladorMenu controlador = new ControladorMenu(this, null);
 
 
-    public Menu() {
+    public Menu(ControladorMenu controlador) {
+    	setTitle("ElorEs - Menu");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 555, 445);
 

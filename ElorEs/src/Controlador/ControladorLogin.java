@@ -25,8 +25,8 @@ public class ControladorLogin implements ActionListener {
 	private Login ventanaLogin;
 	private Menu menu;
 	
-	public ControladorLogin(Login login) {
-		this.ventanaLogin = login;
+	public ControladorLogin(Login ventanaLogin) {
+		this.ventanaLogin = ventanaLogin;
 		try {
 			socketCliente = new SocketCliente();
 
