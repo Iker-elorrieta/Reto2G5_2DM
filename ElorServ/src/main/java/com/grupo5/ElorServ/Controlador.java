@@ -1,6 +1,8 @@
 package com.grupo5.ElorServ;
 
-
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,30 +20,38 @@ import Modelo.Users;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4200")
 public class Controlador {
-    private Metodos metodos = new Metodos();
-    
-    
-    public void addCorsMappings(CorsRegistry registry) {
+	private Metodos metodos = new Metodos();
+
+	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**") // todos los endpoints
-				.allowedOrigins("http://localhost:4200")
-				.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+				.allowedOrigins("http://localhost:4200").allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
 				.allowCredentials(true);
- 
+
 	}
 
-    @GetMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String username, @RequestParam String password) {
-        Users usuario = metodos.loginWeb(username, password);
-        
-        if (usuario != null) {
-            return ResponseEntity.ok(metodos.crearJson(usuario));
-        } else {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body("{\"error\": \"Usuario o contraseña inkorrestos\"}");
-        }
-    }
-    
+	@GetMapping("/login")
+	public ResponseEntity<String> login(@RequestParam String username, @RequestParam String password) {
+		Users usuario = metodos.loginWeb(username, password);
+
+		if (usuario != null) {
+			return ResponseEntity.ok(metodos.crearJson(usuario));
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body("{\"error\": \"Usuario o contraseña incorrectos\"}");
+		}
+	}
+
+	@GetMapping("/centros")
+	public ResponseEntity<String> getCentros() {
+		String json = null;
+		try {
+			File file = new File("src/main/resources/EuskadiLatLon.json");
+			json = Files.readString(file.toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(json);
+	}
 
 }
-
