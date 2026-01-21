@@ -13,6 +13,7 @@ public class ElorServApplication {
 		SpringApplication.run(ElorServApplication.class, args);
 		
 		//Iniciar Socket
+		SocketServer SocketServer = new SocketServer();
 		SocketServer.iniciar();
 	}
 

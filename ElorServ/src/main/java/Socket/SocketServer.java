@@ -6,7 +6,7 @@ import java.net.Socket;
 
 public class SocketServer {
 
-	public static void iniciar() {
+	public void iniciar() {
         try (ServerSocket serverSocket = new ServerSocket(6767)) {
             System.out.println("Servidor socket en el puerto 6767" );
 
