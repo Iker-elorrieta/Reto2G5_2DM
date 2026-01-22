@@ -34,7 +34,7 @@ public class ControladorMenu implements ActionListener {
 			menu.dispose();
 			break;
 		case "ALUMNOS":
-			ControladorAlumnos alumnosCtrl = new ControladorAlumnos();
+			ControladorAlumnos alumnosCtrl = new ControladorAlumnos(user);
 			alumnosCtrl.iniciarAlumnos();
 			menu.setVisible(false); // no lo cerramos, solo lo escondemos
 			break;

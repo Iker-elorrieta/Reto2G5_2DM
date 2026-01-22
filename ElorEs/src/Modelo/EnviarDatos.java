@@ -2,8 +2,12 @@ package Modelo;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+
 
 public class EnviarDatos {
 
@@ -27,6 +31,25 @@ public class EnviarDatos {
 
             return (String) ois.readObject();
         } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public ArrayList<Users> obtenerAlumnos(Users user){
+    	try {
+    		System.out.println("Solicitando alumnos para el profesor con ID: " + user.getId());
+    		oos.writeObject("OBTENER_ALUMNOS");
+    		System.out.println("Enviando ID de profesor: " + user.getId());
+    		oos.writeObject(user.getId());
+    		oos.flush();
+    		String json = (String) ois.readObject();
+    		
+    		Type listType = new TypeToken<ArrayList<Users>>(){}.getType();
+    		ArrayList<Users> listaAlumnos = gson.fromJson(json, listType);
+
+    		return listaAlumnos;
+            
+    	}catch (Exception e) {
             e.printStackTrace();
             return null;
         }

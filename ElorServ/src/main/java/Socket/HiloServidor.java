@@ -49,6 +49,10 @@ public class HiloServidor extends Thread {
 					oos.writeObject(respuesta);
 					oos.flush();
 					break;
+				case "OBTENER_ALUMNOS":
+					Integer userId = (Integer) ois.readObject();
+					String alumnosJson = metodos.obtenerAlumnosPorProfesor(userId);
+					oos.writeObject(alumnosJson);
 				default:
 					break;
 				}
