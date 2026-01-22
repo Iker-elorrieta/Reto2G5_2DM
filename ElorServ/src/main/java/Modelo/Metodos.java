@@ -14,9 +14,10 @@ import Socket.HibernateUtil;
 public class Metodos {
 	private SessionFactory sessionFactory;
 	private Gson gson = new Gson();
+	private HibernateUtil hibernateUtil = new HibernateUtil();
 
 	public Metodos() {
-		sessionFactory = HibernateUtil.getSessionFactory();
+		sessionFactory = hibernateUtil.getSessionFactory();
 		this.gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls().create();
 	}
 
