@@ -4,6 +4,7 @@ import java.security.MessageDigest;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.hibernate.Session;
@@ -124,7 +125,6 @@ public class Metodos {
 		return json;
 	}
 
-	// TODO: TOTAL ALUMNOS, PROFESORES, REUNIONES DEL DIA DE HOY
 
 	public String obtenerStats() {
 	    Session session = sessionFactory.openSession();
@@ -161,6 +161,24 @@ public class Metodos {
 	    }
 	    return json;
 	}
+
+	public String obtenerHorarios(int id) {
+	    Session session = sessionFactory.openSession();
+	    String json = null;
+	    try {
+	        String hql = "FROM Horarios h WHERE h.users.id = :userId";
+	        Query<Horarios> query = session.createQuery(hql, Horarios.class);
+	        query.setParameter("userId", id);
+	        List<Horarios> horarios = query.list();
+	        json = crearJson(horarios);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        session.close();
+	    }
+	    return json;
+	}
+
 
 
 
