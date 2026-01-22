@@ -14,7 +14,8 @@ public class ElorServApplication {
 		
 		//Iniciar Socket
 		SocketServer SocketServer = new SocketServer();
-		SocketServer.iniciar();
+		SocketServer.iniciar(); 
+		
 	}
 
 }
