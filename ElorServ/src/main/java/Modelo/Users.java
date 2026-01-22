@@ -21,7 +21,6 @@ public class Users implements java.io.Serializable {
 	private String email;
 	@Expose
 	private String username;
-	@Expose
 	private String password;
 	@Expose
 	private String nombre;

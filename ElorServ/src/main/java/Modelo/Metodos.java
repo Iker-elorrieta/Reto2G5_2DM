@@ -18,7 +18,7 @@ import Socket.HibernateUtil;
 
 public class Metodos {
 	private SessionFactory sessionFactory;
-	private Gson gson = new Gson();
+	private Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();;
 	private HibernateUtil hibernateUtil = new HibernateUtil();
 
 	public Metodos() {
@@ -37,7 +37,7 @@ public class Metodos {
 		try {
 			session = sessionFactory.openSession();
 
-			String hql = "FROM Users u WHERE u.username = :username AND u.tipos.id = 3";
+			String hql = "FROM Users u WHERE u.username = :username AND (u.tipos.name = 'profesor' OR u.tipos.nameEu = 'irakaslea')";
 			Query<Users> query = session.createQuery(hql, Users.class);
 			query.setParameter("username", usuario);
 
@@ -125,61 +125,84 @@ public class Metodos {
 		return json;
 	}
 
-
 	public String obtenerStats() {
-	    Session session = sessionFactory.openSession();
-	    String json = null;
-	    try {
-	        String totalAlumnosStr = "select count(u) from Users u where u.tipos.id = 4";
-	        String totalProfesoresStr = "select count(u) from Users u where u.tipos.id = 3";
-	        String totalReunionesHoyStr = "select count(r) from Reuniones r where date(r.fecha) = :today";
+		Session session = sessionFactory.openSession();
+		String json = null;
+		try {
+			String totalAlumnosStr = "select count(u) from Users u where u.tipos.id = 4";
+			String totalProfesoresStr = "select count(u) from Users u where u.tipos.id = 3";
+			String totalReunionesHoyStr = "select count(r) from Reuniones r where date(r.fecha) = :today";
 
-	        // Queries
-	        Query<Long> queryAlumnos = session.createQuery(totalAlumnosStr, Long.class);
-	        Query<Long> queryProfesores = session.createQuery(totalProfesoresStr, Long.class);
+			// Queries
+			Query<Long> queryAlumnos = session.createQuery(totalAlumnosStr, Long.class);
+			Query<Long> queryProfesores = session.createQuery(totalProfesoresStr, Long.class);
 
-	        Date today = new Date(System.currentTimeMillis());
-	        Query<Long> queryReuniones = session.createQuery(totalReunionesHoyStr, Long.class)
-	            .setParameter("today", today);
+			Date today = new Date(System.currentTimeMillis());
+			Query<Long> queryReuniones = session.createQuery(totalReunionesHoyStr, Long.class).setParameter("today",
+					today);
 
-	        // Results
-	        Long totalAlumnos = queryAlumnos.uniqueResult();
-	        Long totalProfesores = queryProfesores.uniqueResult();
-	        Long totalReunionesHoy = queryReuniones.uniqueResult();
+			// Results
+			Long totalAlumnos = queryAlumnos.uniqueResult();
+			Long totalProfesores = queryProfesores.uniqueResult();
+			Long totalReunionesHoy = queryReuniones.uniqueResult();
 
-	        // Map and JSON
-	        Map<String, Long> stats = new HashMap<>();
-	        stats.put("totalAlumnos", totalAlumnos);
-	        stats.put("totalProfesores", totalProfesores);
-	        stats.put("totalReunionesHoy", totalReunionesHoy);
+			// Map and JSON
+			Map<String, Long> stats = new HashMap<>();
+			stats.put("totalAlumnos", totalAlumnos);
+			stats.put("totalProfesores", totalProfesores);
+			stats.put("totalReunionesHoy", totalReunionesHoy);
 
-	        json = crearJson(stats);
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        session.close();
-	    }
-	    return json;
+			json = crearJson(stats);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return json;
 	}
 
-	public String obtenerHorarios(int id) {
-	    Session session = sessionFactory.openSession();
-	    String json = null;
-	    try {
-	        String hql = "FROM Horarios h WHERE h.users.id = :userId";
-	        Query<Horarios> query = session.createQuery(hql, Horarios.class);
-	        query.setParameter("userId", id);
-	        List<Horarios> horarios = query.list();
-	        json = crearJson(horarios);
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        session.close();
-	    }
-	    return json;
+	public String obtenerHorarios(Integer id) {
+		Session session = sessionFactory.openSession();
+		String json = null;
+
+		String hqlUsuario = "FROM Users u JOIN FETCH u.tipos WHERE u.id = :userId";
+		Query<Users> queryUsuario = session.createQuery(hqlUsuario, Users.class);
+		queryUsuario.setParameter("userId", id);
+		Users usuario = queryUsuario.uniqueResult();
+
+		System.out.println("=============================");
+		System.out.println(usuario.getTipos().getName());
+
+		if (usuario.getTipos().getName().equals("profesor") || usuario.getTipos().getNameEu().equals("irakaslea")) {
+			try {
+				String hql = "FROM Horarios h JOIN FETCH h.modulos m JOIN FETCH m.ciclos c WHERE h.users.id = :userId";
+				Query<Horarios> query = session.createQuery(hql, Horarios.class);
+				query.setParameter("userId", usuario.getId());
+				List<Horarios> horarios = query.list();
+				json = crearJson(horarios);
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				session.close();
+
+			}
+
+		} else if (usuario.getTipos().getName().equals("alumno") || usuario.getTipos().getNameEu().equals("ikaslea")) {
+
+			String hql = "select distinct h " + "from Horarios h " + "join fetch h.modulos m "
+					+ "join fetch m.ciclos c " + "where exists ( " + "   select 1 " + "   from Matriculaciones matr "
+					+ "   where matr.users.id = :userId " + "     and matr.ciclos = c "
+					+ "     and matr.curso = m.curso " + ") " + "order by h.dia, h.hora";
+
+			Query<Horarios> query = session.createQuery(hql, Horarios.class);
+			query.setParameter("userId", usuario.getId());
+
+			List<Horarios> horarios = query.list();
+			json = crearJson(horarios);
+
+		}
+
+		return json;
 	}
-
-
-
 
 }

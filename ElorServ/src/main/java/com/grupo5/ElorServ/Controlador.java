@@ -68,7 +68,7 @@ public class Controlador {
 	
 	//TODO: HORARIOS PROFESORES Y ALUMNOS
 	@GetMapping("/horarios")
-	public ResponseEntity<String> getHorarios(@RequestParam int id) {
+	public ResponseEntity<String> getHorarios(@RequestParam Integer id) {
 		String json = metodos.obtenerHorarios(id);
 		if (json == null) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
