@@ -50,15 +50,7 @@ public class ControladorAlumnos implements ActionListener {
 			mostrarAlumnos();
 			break;
 			
-			/*if (campoUsername.getText().isEmpty() || campoPassword.getPassword().length == 0) {
-				String faltan = "";
-				if (campoUsername.getText().isEmpty())
-					faltan += "Username ";
-				if (campoPassword.getPassword().length == 0)
-					faltan += "Contraseña";
-				lblMensaje.setText("Falta: " + faltan);
-				return;
-			}*/
+			
 		}
 	}
 	

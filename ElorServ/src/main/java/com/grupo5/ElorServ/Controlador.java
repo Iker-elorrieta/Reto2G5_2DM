@@ -53,5 +53,19 @@ public class Controlador {
 		}
 		return ResponseEntity.ok(json);
 	}
+	
+	//TODO: TOTAL ALUMNOS, PROFESORES, REUNIONES DEL DIA DE HOY
+	@GetMapping("/stats")
+	public ResponseEntity<String> getStats() {
+		String json = metodos.obtenerStats();
+		if (json == null) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("{\"error\": \"No se pudieron obtener las estadísticas\"}");
+		}else {
+		return ResponseEntity.ok(json);
+		}
+	}
+	
+	//TODO: HORARIOS PROFESORES Y ALUMNOS
 
 }

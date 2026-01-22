@@ -1,7 +1,10 @@
 package Modelo;
 
 import java.security.MessageDigest;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -21,11 +24,10 @@ public class Metodos {
 		sessionFactory = hibernateUtil.getSessionFactory();
 		this.gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls().create();
 	}
-	
+
 	public String crearJson(Object objeto) {
 		return gson.toJson(objeto);
 	}
-
 
 	public Users loginCliente(String usuario, String contrasenaHasheada) {
 		Session session = null;
@@ -100,7 +102,6 @@ public class Metodos {
 		return usuarioLog;
 	}
 
-	
 	public String obtenerAlumnos(String profesorJson) {
 		ArrayList<Users> listaAlumnos = new ArrayList<>();
 		Session session = sessionFactory.openSession();
@@ -122,5 +123,45 @@ public class Metodos {
 		}
 		return json;
 	}
+
+	// TODO: TOTAL ALUMNOS, PROFESORES, REUNIONES DEL DIA DE HOY
+
+	public String obtenerStats() {
+	    Session session = sessionFactory.openSession();
+	    String json = null;
+	    try {
+	        String totalAlumnosStr = "select count(u) from Users u where u.tipos.id = 4";
+	        String totalProfesoresStr = "select count(u) from Users u where u.tipos.id = 3";
+	        String totalReunionesHoyStr = "select count(r) from Reuniones r where date(r.fecha) = :today";
+
+	        // Queries
+	        Query<Long> queryAlumnos = session.createQuery(totalAlumnosStr, Long.class);
+	        Query<Long> queryProfesores = session.createQuery(totalProfesoresStr, Long.class);
+
+	        Date today = new Date(System.currentTimeMillis());
+	        Query<Long> queryReuniones = session.createQuery(totalReunionesHoyStr, Long.class)
+	            .setParameter("today", today);
+
+	        // Results
+	        Long totalAlumnos = queryAlumnos.uniqueResult();
+	        Long totalProfesores = queryProfesores.uniqueResult();
+	        Long totalReunionesHoy = queryReuniones.uniqueResult();
+
+	        // Map and JSON
+	        Map<String, Long> stats = new HashMap<>();
+	        stats.put("totalAlumnos", totalAlumnos);
+	        stats.put("totalProfesores", totalProfesores);
+	        stats.put("totalReunionesHoy", totalReunionesHoy);
+
+	        json = crearJson(stats);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        session.close();
+	    }
+	    return json;
+	}
+
+
 
 }
