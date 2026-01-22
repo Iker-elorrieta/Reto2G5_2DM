@@ -49,6 +49,13 @@ public class HiloServidor extends Thread {
 					oos.writeObject(respuesta);
 					oos.flush();
 					break;
+				case "CONSEGUIR_ALUMNOS":
+					String userJson = (String) ois.readObject();
+					System.out.println("Servidor: Recibido comando CONSEGUIR_ALUMNOS");
+					String alumnosJson = metodos.obtenerAlumnos(userJson);
+					oos.writeObject(alumnosJson);
+					oos.flush();
+					break;
 				default:
 					break;
 				}

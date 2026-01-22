@@ -1,6 +1,7 @@
 package Modelo;
 
 import java.security.MessageDigest;
+import java.util.ArrayList;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -20,6 +21,11 @@ public class Metodos {
 		sessionFactory = hibernateUtil.getSessionFactory();
 		this.gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls().create();
 	}
+	
+	public String crearJson(Object objeto) {
+		return gson.toJson(objeto);
+	}
+
 
 	public Users loginCliente(String usuario, String contrasenaHasheada) {
 		Session session = null;
@@ -94,8 +100,27 @@ public class Metodos {
 		return usuarioLog;
 	}
 
-	public String crearJson(Object objeto) {
-		return gson.toJson(objeto);
+	
+	public String obtenerAlumnos(String profesorJson) {
+		ArrayList<Users> listaAlumnos = new ArrayList<>();
+		Session session = sessionFactory.openSession();
+		String json = null;
+
+		try {
+			Users profesor = gson.fromJson(profesorJson, Users.class);
+			String hql = "select distinct r.usersByAlumnoId " + "from Users profesor "
+					+ "join profesor.reunionesesForProfesorId r " + "where profesor = :profesor";
+			Query<Users> query = session.createQuery(hql, Users.class);
+			query.setParameter("profesor", profesor);
+			listaAlumnos.addAll(query.list());
+
+			json = crearJson(listaAlumnos);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return json;
 	}
 
 }
