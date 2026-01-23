@@ -77,5 +77,15 @@ public class Controlador {
 		return ResponseEntity.ok(json);
 		}
 	}
+	@GetMapping("/users")
+	public ResponseEntity<String> getUsers() {
+		String json = metodos.obtenerUsers();
+		if (json == null) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("{\"error\": \"No se pudieron obtener los usuarios\"}");
+		}else {
+		return ResponseEntity.ok(json);
+		}
+	}
 
 }

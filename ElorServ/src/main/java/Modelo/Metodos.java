@@ -204,9 +204,9 @@ public class Metodos {
 
 		return json;
 	}
-	
-	public String obtenerProfesores(){
-		
+
+	public String obtenerProfesores() {
+
 		Session session = sessionFactory.openSession();
 
 		String hqlUsuario = "FROM Users u JOIN FETCH u.tipos t WHERE t.name = :nombreTipo OR t.nameEu = :nombreTipoEu";
@@ -214,8 +214,25 @@ public class Metodos {
 		queryUsuario.setParameter("nombreTipo", "profesor");
 		queryUsuario.setParameter("nombreTipoEu", "irakaslea");
 		List<Users> usuario = queryUsuario.list();
-		
+
 		return crearJson(usuario);
+	}
+
+	public String obtenerUsers() {
+		Session session = sessionFactory.openSession();
+		try {
+			String hql = "FROM Users u JOIN FETCH u.tipos";
+			Query<Users> query = session.createQuery(hql, Users.class);
+			List<Users> usuarios = query.list();
+			String json = crearJson(usuarios);
+			return json;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+		return null;
 	}
 
 }
