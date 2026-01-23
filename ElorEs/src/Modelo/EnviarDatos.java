@@ -1,5 +1,6 @@
 package Modelo;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class EnviarDatos {
 			oos.writeObject("CONSEGUIR_HORARIOS");
 			oos.write(user.getId());
 			oos.flush();
-			
+
 			String json = (String) ois.readObject();
 			Type listType = new TypeToken<ArrayList<Horarios>>() {
 			}.getType();
@@ -82,7 +83,29 @@ public class EnviarDatos {
 			e.printStackTrace();
 			return null;
 		}
-		
 
+	}
+
+	public ArrayList<Users> conseguirProfesores() {
+		try {
+			oos.writeObject("CONSEGUIR_PROFESORES");
+
+			oos.flush();
+
+			String json = (String) ois.readObject();
+			Type listType = new TypeToken<ArrayList<Users>>() {
+			}.getType();
+			ArrayList<Users> listaProfesores = gson.fromJson(json, listType);
+			return listaProfesores;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+
+		}
 	}
 }

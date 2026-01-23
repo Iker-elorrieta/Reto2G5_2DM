@@ -1,5 +1,6 @@
 package Controlador;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -20,10 +21,14 @@ public class ControladorHorarios implements ActionListener {
 	private SocketCliente socketCliente;
 	private static EnviarDatos enviarDatos = null;
 	private Users user;
+	private Window previousWindow; // Add this field
 
-	public ControladorHorarios(Users user) {
+
+	public ControladorHorarios(Users user, Window previousWindow) {
 		this.user = user;
 		ventana = new Horario(this);
+	    this.previousWindow = previousWindow;
+
 		try {
 			socketCliente = new SocketCliente();
 
@@ -43,10 +48,11 @@ public class ControladorHorarios implements ActionListener {
 		String comando = e.getActionCommand();
 		switch (comando) {
 		case "VOLVER":
-			ControladorMenu controladorMenu = new ControladorMenu(menu,user);
-			controladorMenu.iniciarMenu();
-			ventana.dispose();
-			break;
+            if (previousWindow != null) {
+                previousWindow.setVisible(true);
+            }
+            ventana.dispose();
+            break;
 		}
 	}
 	

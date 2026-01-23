@@ -150,7 +150,7 @@ public class Menu extends JFrame {
 		btnHorarios.setActionCommand("HORARIOS");
 		btnHorarios.addActionListener(controlador);
 		
-		btnOtrosHorarios.setActionCommand("OTROSHORARIOS");
+		btnOtrosHorarios.setActionCommand("OTROS_HORARIOS");
 		btnOtrosHorarios.addActionListener(controlador);
 		
 		btnReuniones.setActionCommand("REUNIONES");

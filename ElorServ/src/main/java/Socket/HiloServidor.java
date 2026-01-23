@@ -64,6 +64,10 @@ public class HiloServidor extends Thread {
 					oos.writeObject(horariosJson);
 					oos.flush();
 					break;
+				case "CONSEGUIR_PROFESORES":
+					String profesoresJson = metodos.obtenerProfesores();
+					oos.writeObject(profesoresJson);
+					oos.flush();
 				default:
 					break;
 				}

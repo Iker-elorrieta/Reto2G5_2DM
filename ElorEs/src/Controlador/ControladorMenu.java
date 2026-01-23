@@ -40,13 +40,13 @@ public class ControladorMenu implements ActionListener {
 			break;
 
 		case "HORARIOS":
-			ControladorHorarios horariosCtrl = new ControladorHorarios(user);
+			ControladorHorarios horariosCtrl = new ControladorHorarios(user, menu);
 			horariosCtrl.iniciarHorarios();
 			menu.setVisible(false);
 			break;
 
-		case "OTROS-HORARIOS":
-			ControladorOtrosHorarios otrosCtrl = new ControladorOtrosHorarios();
+		case "OTROS_HORARIOS":
+			ControladorOtrosHorarios otrosCtrl = new ControladorOtrosHorarios(user);
 			otrosCtrl.iniciarOtrosHorarios();
 			menu.setVisible(false);
 			break;
