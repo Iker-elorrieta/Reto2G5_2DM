@@ -208,13 +208,12 @@ public class Metodos {
 	public String obtenerProfesores(){
 		
 		Session session = sessionFactory.openSession();
-		String json = null;
 
 		String hqlUsuario = "FROM Users u JOIN FETCH u.tipos t WHERE t.name = :nombreTipo OR t.nameEu = :nombreTipoEu";
 		Query<Users> queryUsuario = session.createQuery(hqlUsuario, Users.class);
 		queryUsuario.setParameter("nombreTipo", "profesor");
 		queryUsuario.setParameter("nombreTipoEu", "irakaslea");
-		List usuario = queryUsuario.list();
+		List<Users> usuario = queryUsuario.list();
 		
 		return crearJson(usuario);
 	}

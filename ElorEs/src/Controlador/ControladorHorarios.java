@@ -12,12 +12,10 @@ import Modelo.Horarios;
 import Modelo.SocketCliente;
 import Modelo.Users;
 import Vista.Horario;
-import Vista.Menu;
 
 public class ControladorHorarios implements ActionListener {
 
 	private Horario ventana;
-	private Menu menu;
 	private SocketCliente socketCliente;
 	private static EnviarDatos enviarDatos = null;
 	private Users user;
