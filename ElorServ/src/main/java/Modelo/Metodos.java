@@ -221,7 +221,7 @@ public class Metodos {
 	public String obtenerUsers() {
 		Session session = sessionFactory.openSession();
 		try {
-			String hql = "FROM Users u JOIN FETCH u.tipos";
+			String hql = "FROM Users u JOIN FETCH u.tipos ORDER BY u.id ASC";
 			Query<Users> query = session.createQuery(hql, Users.class);
 			List<Users> usuarios = query.list();
 			String json = crearJson(usuarios);
@@ -234,5 +234,88 @@ public class Metodos {
 
 		return null;
 	}
+
+	public boolean createUser(Users user) {
+		Session session = sessionFactory.openSession();
+		try {
+			session.beginTransaction();
+			session.persist(user);
+			session.getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (session.getTransaction() != null) {
+				session.getTransaction().rollback();
+			}
+			return false;
+		} finally {
+			session.close();
+		}
+
+	}
+
+	public boolean updateUser(Integer id, Users user) {
+		Session session = sessionFactory.openSession();
+		try {
+			session.beginTransaction();
+			Users existingUser = session.get(Users.class, id);
+			if (existingUser == null) {
+				return false;
+			}
+			// Update all fields
+			existingUser.setTipos(user.getTipos());
+			existingUser.setEmail(user.getEmail());
+			existingUser.setUsername(user.getUsername());
+			existingUser.setPassword(user.getPassword());
+			existingUser.setNombre(user.getNombre());
+			existingUser.setApellidos(user.getApellidos());
+			existingUser.setDni(user.getDni());
+			existingUser.setDireccion(user.getDireccion());
+			existingUser.setTelefono1(user.getTelefono1());
+			existingUser.setTelefono2(user.getTelefono2());
+			existingUser.setArgazkiaUrl(user.getArgazkiaUrl());
+			existingUser.setCreatedAt(user.getCreatedAt());
+			existingUser.setUpdatedAt(user.getUpdatedAt());
+			existingUser.setMatriculacioneses(user.getMatriculacioneses());
+			existingUser.setReunionesesForAlumnoId(user.getReunionesesForAlumnoId());
+			existingUser.setHorarioses(user.getHorarioses());
+			existingUser.setReunionesesForProfesorId(user.getReunionesesForProfesorId());
+
+			session.getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (session.getTransaction() != null) {
+				session.getTransaction().rollback();
+			}
+			return false;
+		} finally {
+			session.close();
+		}
+	}
+
+	public boolean deleteUser(Integer id) {
+	    Session session = sessionFactory.openSession();
+	    try {
+	        session.beginTransaction();
+	        Users user = session.get(Users.class, id);
+	        if (user != null) {
+	            session.remove(user); // Removes the entity
+	            session.getTransaction().commit(); // Commit the transaction
+	            return true;
+	        } else {
+	            return false;
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        if (session.getTransaction() != null) {
+	            session.getTransaction().rollback();
+	        }
+	        return false;
+	    } finally {
+	        session.close();
+	    }
+	}
+
 
 }

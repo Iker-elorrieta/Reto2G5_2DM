@@ -7,7 +7,12 @@ import java.nio.file.Files;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -85,6 +90,37 @@ public class Controlador {
 					.body("{\"error\": \"No se pudieron obtener los usuarios\"}");
 		}else {
 		return ResponseEntity.ok(json);
+		}
+	}
+	
+	@PostMapping("/users")
+	public ResponseEntity<String> createUser(@RequestBody Users user) {
+		boolean success = metodos.createUser(user);
+		if (success) {
+			return ResponseEntity.ok("{\"message\": \"Usuario actualizado correctamente\"}");
+		} else {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("{\"error\": \"No se pudo actualizar el usuario\"}");
+		}
+	}
+	@PutMapping("/users/{id}")
+	public ResponseEntity<String> updateUser(@PathVariable Integer id, @RequestBody Users user) {
+		boolean success = metodos.updateUser(id, user);
+		if (success) {
+			return ResponseEntity.ok("{\"message\": \"Usuario actualizado correctamente\"}");
+		} else {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("{\"error\": \"No se pudo actualizar el usuario\"}");
+		}
+	}
+	@DeleteMapping("/users/{id}")
+	public ResponseEntity<String> deleteUser(@PathVariable Integer id) {
+		boolean success = metodos.deleteUser(id);
+		if (success) {
+			return ResponseEntity.ok("{\"message\": \"Usuario eliminado correctamente\"}");
+		} else {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("{\"error\": \"No se pudo eliminar el usuario\"}");
 		}
 	}
 
