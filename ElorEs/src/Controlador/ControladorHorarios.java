@@ -17,7 +17,7 @@ public class ControladorHorarios implements ActionListener {
 
 	private Horario ventana;
 	private SocketCliente socketCliente;
-	private static EnviarDatos enviarDatos = null;
+	private EnviarDatos enviarDatos = null;
 	private Users user;
 	private Window previousWindow; // Add this field
 

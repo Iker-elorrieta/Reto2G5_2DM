@@ -18,7 +18,7 @@ public class ControladorAlumnos implements ActionListener {
 	private Menu menu;
 	private Users user;
 	private SocketCliente socketCliente;
-	private static EnviarDatos enviarDatos = null;
+	private  EnviarDatos enviarDatos = null;
 
 	public ControladorAlumnos(Users user) {
 		ventana = new Alumnos(this);

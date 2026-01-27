@@ -129,8 +129,8 @@ public class Metodos {
 		Session session = sessionFactory.openSession();
 		String json = null;
 		try {
-			String totalAlumnosStr = "select count(u) from Users u where u.tipos.id = 4";
-			String totalProfesoresStr = "select count(u) from Users u where u.tipos.id = 3";
+			String totalAlumnosStr = "select count(u) from Users u where u.tipos.name = 'alumno' or u.tipos.nameEu = 'ikaslea'";
+			String totalProfesoresStr = "select count(u) from Users u where u.tipos.name = 'profesor' or u.tipos.nameEu = 'irakaslea'";
 			String totalReunionesHoyStr = "select count(r) from Reuniones r where date(r.fecha) = :today";
 
 			// Queries
@@ -165,9 +165,8 @@ public class Metodos {
 		Session session = sessionFactory.openSession();
 		String json = null;
 
-		String hqlUsuario = "FROM Users u JOIN FETCH u.tipos WHERE u.id = :userId";
+		String hqlUsuario = "FROM Users u JOIN FETCH u.tipos WHERE u =" + id;
 		Query<Users> queryUsuario = session.createQuery(hqlUsuario, Users.class);
-		queryUsuario.setParameter("userId", id);
 		Users usuario = queryUsuario.uniqueResult();
 
 		System.out.println("=============================");
@@ -191,11 +190,10 @@ public class Metodos {
 
 			String hql = "select distinct h " + "from Horarios h " + "join fetch h.modulos m "
 					+ "join fetch m.ciclos c " + "where exists ( " + "   select 1 " + "   from Matriculaciones matr "
-					+ "   where matr.users.id = :userId " + "     and matr.ciclos = c "
+					+ "   where matr.users = " + id + "     and matr.ciclos = c "
 					+ "     and matr.curso = m.curso " + ") " + "order by h.dia, h.hora";
 
 			Query<Horarios> query = session.createQuery(hql, Horarios.class);
-			query.setParameter("userId", usuario.getId());
 
 			List<Horarios> horarios = query.list();
 			json = crearJson(horarios);

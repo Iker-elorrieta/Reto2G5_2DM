@@ -16,7 +16,7 @@ public class ControladorOtrosHorarios implements ActionListener {
     private OtrosHorarios ventana;
     private Users user;
     private SocketCliente socketCliente;
-    private static EnviarDatos enviarDatos = null;
+    private  EnviarDatos enviarDatos = null;
     private Menu menu;
     private ArrayList<Users> profesores; // Store the full list
 
