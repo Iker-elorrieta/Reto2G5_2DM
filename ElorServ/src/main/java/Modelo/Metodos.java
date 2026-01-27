@@ -286,6 +286,11 @@ public class Metodos {
 			existingUser.setTipos(user.getTipos());
 			existingUser.setEmail(user.getEmail());
 			existingUser.setUsername(user.getUsername());
+			if(user.getPassword() != null && !user.getPassword().isEmpty()) {
+				existingUser.setPassword(user.getPassword());
+			} else {
+				existingUser.setPassword(existingUser.getPassword()); // Keep existing password
+			}
 			existingUser.setPassword(existingUser.getPassword()); // Keep existing password
 			existingUser.setNombre(user.getNombre());
 			existingUser.setApellidos(user.getApellidos());
