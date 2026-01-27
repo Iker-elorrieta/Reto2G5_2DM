@@ -123,5 +123,28 @@ public class Controlador {
 					.body("{\"error\": \"No se pudo eliminar el usuario\"}");
 		}
 	}
+	
+	@GetMapping("/horarios")
+	public ResponseEntity<String> getHorario(@PathVariable Integer id) {
+		String json = metodos.obtenerHorarios(id);
+		if (json == null) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("{\"error\": \"No se pudieron obtener los profesores\"}");
+		}else {
+		return ResponseEntity.ok(json);
+		}
+	}
+	
+	@GetMapping("/reuniones")
+	public ResponseEntity<String> getReuniones(@RequestParam Integer id) {
+		String json = metodos.obtenerReuniones(id);
+		if (json == null) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("{\"error\": \"No se pudieron obtener las reuniones\"}");
+		}else {
+		return ResponseEntity.ok(json);
+		}
+	}
+	
 
 }

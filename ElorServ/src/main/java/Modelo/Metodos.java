@@ -315,5 +315,23 @@ public class Metodos {
 	    }
 	}
 
+	public String obtenerReuniones(Integer id) {
+		Session session = sessionFactory.openSession();
+		String json = null;
+
+		try {
+			String hql = "FROM Reuniones r JOIN FETCH r.usersByAlumnoId JOIN FETCH r.usersByProfesorId WHERE r.usersByProfesorId = "+id +" OR r.usersByAlumnoId ="+id+" ORDER BY r.fecha ASC";
+			Query<Reuniones> query = session.createQuery(hql, Reuniones.class);
+			List<Reuniones> reuniones = query.list();
+			json = crearJson(reuniones);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+		return json;
+	}
+
 
 }
