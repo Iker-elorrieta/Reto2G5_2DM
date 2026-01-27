@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import Modelo.Metodos;
+import Modelo.Tipos;
 import Modelo.Users;
 
 @RestController
@@ -71,17 +72,29 @@ public class Controlador {
 		}
 	}
 	
-	//TODO: HORARIOS PROFESORES Y ALUMNOS
-	@GetMapping("/horarios")
-	public ResponseEntity<String> getHorarios(@RequestParam Integer id) {
-		String json = metodos.obtenerHorarios(id);
-		if (json == null) {
+	@GetMapping("/horarios/{id}")
+	public ResponseEntity<String> getHorarios(@PathVariable Integer id) {
+		
+		Tipos tipo = metodos.obtenerTipoPorUserId(id);
+		if (tipo == null) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("{\"error\": \"No se pudieron obtener los horarios\"}");
-		}else {
-		return ResponseEntity.ok(json);
+					.body("{\"error\": \"No se pudo obtener el tipo de usuario\"}");
+			
+		} else if (tipo.getName().equals("profesor")|| tipo.getNameEu().equals("irakaslea")) {
+			return  ResponseEntity.ok(metodos.obtenerHorariosProfesor(id));
+
+		} else if (tipo.getName().equals("alumno")|| tipo.getNameEu().equals("ikaslea")) {
+			return ResponseEntity.ok(metodos.obtenerHorariosAlumno(id));
 		}
+		
+		else {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+					.body("{\"error\": \"Acceso denegado: solo profesores y administradores pueden acceder a los horarios\"}");
+			
+		}
+	
 	}
+	
 	@GetMapping("/users")
 	public ResponseEntity<String> getUsers() {
 		String json = metodos.obtenerUsers();
@@ -124,19 +137,9 @@ public class Controlador {
 		}
 	}
 	
-	@GetMapping("/horarios")
-	public ResponseEntity<String> getHorario(@PathVariable Integer id) {
-		String json = metodos.obtenerHorarios(id);
-		if (json == null) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("{\"error\": \"No se pudieron obtener los profesores\"}");
-		}else {
-		return ResponseEntity.ok(json);
-		}
-	}
 	
-	@GetMapping("/reuniones")
-	public ResponseEntity<String> getReuniones(@RequestParam Integer id) {
+	@GetMapping("/reuniones/{id}")
+	public ResponseEntity<String> getReuniones(@PathVariable Integer id) {
 		String json = metodos.obtenerReuniones(id);
 		if (json == null) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

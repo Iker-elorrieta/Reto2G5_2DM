@@ -161,47 +161,69 @@ public class Metodos {
 		return json;
 	}
 
-	public String obtenerHorarios(Integer id) {
+	public Tipos obtenerTipoPorUserId(Integer id) {
+		Session session = sessionFactory.openSession();
+		Tipos tipo = null;
+
+		try {
+			String hql = "FROM Users u JOIN FETCH u.tipos WHERE u.id = :userId";
+			Query<Users> query = session.createQuery(hql, Users.class);
+			query.setParameter("userId", id);
+			Users usuario = query.uniqueResult();
+			if (usuario != null) {
+				tipo = usuario.getTipos();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+		return tipo;
+
+	}
+
+	public String obtenerHorariosProfesor(Integer id) {
 		Session session = sessionFactory.openSession();
 		String json = null;
 
-		String hqlUsuario = "FROM Users u JOIN FETCH u.tipos WHERE u =" + id;
-		Query<Users> queryUsuario = session.createQuery(hqlUsuario, Users.class);
-		Users usuario = queryUsuario.uniqueResult();
+		try {
+			String hql = "FROM Horarios h JOIN FETCH h.modulos m JOIN FETCH m.ciclos c WHERE h.users.id =" + id;
+			Query<Horarios> query = session.createQuery(hql, Horarios.class);
+			List<Horarios> horarios = query.list();
+			json = crearJson(horarios);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
 
-		System.out.println("=============================");
-		System.out.println(usuario.getTipos().getName());
+		}
+		return json;
+	}
 
-		if (usuario.getTipos().getName().equals("profesor") || usuario.getTipos().getNameEu().equals("irakaslea")) {
-			try {
-				String hql = "FROM Horarios h JOIN FETCH h.modulos m JOIN FETCH m.ciclos c WHERE h.users.id = :userId";
-				Query<Horarios> query = session.createQuery(hql, Horarios.class);
-				query.setParameter("userId", usuario.getId());
-				List<Horarios> horarios = query.list();
-				json = crearJson(horarios);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				session.close();
+	public String obtenerHorariosAlumno(Integer id) {
+		Session session = sessionFactory.openSession();
+		String json = null;
 
-			}
-
-		} else if (usuario.getTipos().getName().equals("alumno") || usuario.getTipos().getNameEu().equals("ikaslea")) {
-
+		try {
 			String hql = "select distinct h " + "from Horarios h " + "join fetch h.modulos m "
 					+ "join fetch m.ciclos c " + "where exists ( " + "   select 1 " + "   from Matriculaciones matr "
-					+ "   where matr.users = " + id + "     and matr.ciclos = c "
-					+ "     and matr.curso = m.curso " + ") " + "order by h.dia, h.hora";
+					+ "   where matr.users = " + id + "     and matr.ciclos = c " + "     and matr.curso = m.curso "
+					+ ") " + "order by h.dia, h.hora";
 
 			Query<Horarios> query = session.createQuery(hql, Horarios.class);
 
 			List<Horarios> horarios = query.list();
 			json = crearJson(horarios);
-
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
 		}
 
 		return json;
 	}
+
 
 	public String obtenerProfesores() {
 
@@ -264,7 +286,7 @@ public class Metodos {
 			existingUser.setTipos(user.getTipos());
 			existingUser.setEmail(user.getEmail());
 			existingUser.setUsername(user.getUsername());
-			existingUser.setPassword(user.getPassword());
+			existingUser.setPassword(existingUser.getPassword()); // Keep existing password
 			existingUser.setNombre(user.getNombre());
 			existingUser.setApellidos(user.getApellidos());
 			existingUser.setDni(user.getDni());
@@ -293,26 +315,26 @@ public class Metodos {
 	}
 
 	public boolean deleteUser(Integer id) {
-	    Session session = sessionFactory.openSession();
-	    try {
-	        session.beginTransaction();
-	        Users user = session.get(Users.class, id);
-	        if (user != null) {
-	            session.remove(user); // Removes the entity
-	            session.getTransaction().commit(); // Commit the transaction
-	            return true;
-	        } else {
-	            return false;
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        if (session.getTransaction() != null) {
-	            session.getTransaction().rollback();
-	        }
-	        return false;
-	    } finally {
-	        session.close();
-	    }
+		Session session = sessionFactory.openSession();
+		try {
+			session.beginTransaction();
+			Users user = session.get(Users.class, id);
+			if (user != null) {
+				session.remove(user); // Removes the entity
+				session.getTransaction().commit(); // Commit the transaction
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (session.getTransaction() != null) {
+				session.getTransaction().rollback();
+			}
+			return false;
+		} finally {
+			session.close();
+		}
 	}
 
 	public String obtenerReuniones(Integer id) {
@@ -320,7 +342,8 @@ public class Metodos {
 		String json = null;
 
 		try {
-			String hql = "FROM Reuniones r JOIN FETCH r.usersByAlumnoId JOIN FETCH r.usersByProfesorId WHERE r.usersByProfesorId = "+id +" OR r.usersByAlumnoId ="+id+" ORDER BY r.fecha ASC";
+			String hql = "FROM Reuniones r JOIN FETCH r.usersByAlumnoId JOIN FETCH r.usersByProfesorId WHERE r.usersByProfesorId = "
+					+ id + " OR r.usersByAlumnoId =" + id + " ORDER BY r.fecha ASC";
 			Query<Reuniones> query = session.createQuery(hql, Reuniones.class);
 			List<Reuniones> reuniones = query.list();
 			json = crearJson(reuniones);
@@ -332,6 +355,5 @@ public class Metodos {
 
 		return json;
 	}
-
 
 }

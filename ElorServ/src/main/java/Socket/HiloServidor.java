@@ -60,7 +60,7 @@ public class HiloServidor extends Thread {
 					Integer userId = (Integer) ois.read();
 					System.out.println("Servidor: Recibido comando CONSEGUIR_HORARIOS");
 					
-					String horariosJson = metodos.obtenerHorarios(userId);
+					String horariosJson = metodos.obtenerHorariosProfesor(userId);
 					oos.writeObject(horariosJson);
 					oos.flush();
 					break;
