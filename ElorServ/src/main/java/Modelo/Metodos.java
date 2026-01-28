@@ -1,5 +1,6 @@
 package Modelo;
 
+
 import java.security.MessageDigest;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -10,18 +11,19 @@ import java.util.Map;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import Socket.HibernateUtil;
 
+@Component
 public class Metodos {
 	private SessionFactory sessionFactory;
 	private Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();;
-	private HibernateUtil hibernateUtil = new HibernateUtil();
 
-	public Metodos() {
+	public Metodos(HibernateUtil hibernateUtil) {
 		sessionFactory = hibernateUtil.getSessionFactory();
 		this.gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls().create();
 	}
@@ -372,5 +374,7 @@ public class Metodos {
 	    
 	    return json;
 	}
+
+	
 
 }
