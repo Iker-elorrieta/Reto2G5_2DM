@@ -346,12 +346,14 @@ public class Metodos {
 	    String json = null;
 	    
 	    try (Session session = sessionFactory.openSession()) {
-	        String hql = "FROM Reuniones r " +
-	                     "JOIN FETCH r.usersByAlumnoId " +
-	                     "JOIN FETCH r.usersByProfesorId " +
-	                     "WHERE r.usersByProfesorId.id = :userId " +
-	                     "OR r.usersByAlumnoId.id = :userId " +
-	                     "ORDER BY r.fecha ASC";
+	    	String hql = "FROM Reuniones r " +
+                    "JOIN FETCH r.usersByAlumnoId alumno " +
+                    "JOIN FETCH r.usersByProfesorId profesor " +
+                    "JOIN FETCH alumno.tipos " +
+                    "JOIN FETCH profesor.tipos " +
+                    "WHERE r.usersByProfesorId.id = :userId " +
+                    "OR r.usersByAlumnoId.id = :userId " +
+                    "ORDER BY r.fecha ASC";
 	        
 	        Query<Reuniones> query = session.createQuery(hql, Reuniones.class);
 	        query.setParameter("userId", id);
