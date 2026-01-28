@@ -14,7 +14,6 @@ public class Horarios implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	@Expose
 	private Integer id;
-	@Expose
 	private Users users;
 	@Expose
 	private Modulos modulos;

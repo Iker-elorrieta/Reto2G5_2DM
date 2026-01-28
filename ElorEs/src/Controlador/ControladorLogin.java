@@ -21,7 +21,7 @@ public class ControladorLogin implements ActionListener {
 	private JPasswordField campoPassword;
 	private JLabel lblMensaje;
 	private SocketCliente socketCliente;
-	private static EnviarDatos enviarDatos = null;
+	private  EnviarDatos enviarDatos = null;
 	private Login ventanaLogin;
 	private Menu menu;
 	
