@@ -2,6 +2,8 @@ package Vista;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
@@ -21,21 +23,18 @@ public class GestionarReuniones extends JFrame {
     private JButton btnCrear;
     private JButton btnAceptar;
     private JButton btnDenegar;
-	/**
-	 * Create the frame.
-	 */
 
 	public GestionarReuniones(ControladorGestionarReuniones controlador) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 900, 500); // Un poco más ancha para ver los datos
+		setBounds(100, 100, 900, 500); 
 		contentPane = new JPanel(new BorderLayout());
 		contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
 		Estilos.panelFondo(contentPane);
 		setContentPane(contentPane);
 
-		// --- 1. HEADER (Título y Volver) ---
+		// --- 1. HEADER ---
 		JPanel panelTop = new JPanel(new BorderLayout());
-		Estilos.header(panelTop); // Usamos el estilo header con borde inferior
+		Estilos.header(panelTop); 
 
 		btnVolver = new JButton("Volver al Calendario");
 		Estilos.botonHeader(btnVolver);
@@ -45,7 +44,6 @@ public class GestionarReuniones extends JFrame {
 		JLabel lblTitulo = new JLabel("GESTIÓN DE REUNIONES", SwingConstants.CENTER);
 		Estilos.labelTitulo(lblTitulo);
 
-		// Panel auxiliar para equilibrar el layout
 		JPanel panelVacio = new JPanel();
 		panelVacio.setOpaque(false);
 		panelVacio.setPreferredSize(new Dimension(150, 10));
@@ -57,23 +55,13 @@ public class GestionarReuniones extends JFrame {
 		contentPane.add(panelTop, BorderLayout.NORTH);
 
 		// --- 2. TABLA CENTRAL ---
-		// Columnas basadas en tus atributos
-		String[] columnas = { "ID", // idReunion (Oculto o visible, útil para la lógica)
-				"Título", // titulo
-				"Asunto", // asunto
-				"Solicitante", // usersByAlumnoId (Nombre)
-				"Profesor", // usersByProfesorId (Nombre)
-				"Fecha", // fecha
-				"Aula", // aula
-				"Estado" // estado
-		};
+		String[] columnas = { "ID", "Título", "Asunto", "Solicitante", "Profesor", "Fecha", "Aula", "Estado" };
 
 		modeloGestion = new DefaultTableModel(null, columnas) {
 			private static final long serialVersionUID = 1L;
-
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				return false; // Hacemos que la tabla no sea editable directamente
+				return false; 
 			}
 		};
 
@@ -85,7 +73,7 @@ public class GestionarReuniones extends JFrame {
 		tablaGestion.setSelectionBackground(new Color(90, 150, 200));
 		tablaGestion.setSelectionForeground(Color.WHITE);
 
-		// Estilo del Header de la tabla
+		// Estilo del Header
 		JTableHeader header = tablaGestion.getTableHeader();
 		header.setFont(new Font("Roboto", Font.BOLD, 14));
 		header.setBackground(new Color(70, 130, 180));
@@ -98,11 +86,11 @@ public class GestionarReuniones extends JFrame {
 
 		// --- 3. PANEL INFERIOR (Acciones) ---
 		JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
-		Estilos.body(panelBotones); // Fondo del cuerpo
+		Estilos.body(panelBotones); 
 
 		btnCrear = new JButton("Nueva Reunión (+)");
 		Estilos.botonPrimario(btnCrear);
-		btnCrear.setBackground(new Color(46, 139, 87)); // Un verde para diferenciar "Crear"
+		btnCrear.setBackground(new Color(46, 139, 87)); 
 		btnCrear.setActionCommand("NUEVA_REUNION");
 		btnCrear.addActionListener(controlador);
 
@@ -113,12 +101,33 @@ public class GestionarReuniones extends JFrame {
 
 		btnDenegar = new JButton("Denegar Solicitud");
 		Estilos.botonPrimario(btnDenegar);
-		btnDenegar.setBackground(new Color(205, 92, 92)); // Un rojo suave para "Denegar"
+		btnDenegar.setBackground(new Color(205, 92, 92)); 
 		btnDenegar.setActionCommand("DENEGAR_REUNION");
 		btnDenegar.addActionListener(controlador);
 
+		// --- LÓGICA DE ACTIVAR/DESACTIVAR BOTONES ---
+		
+		// 1. Estado inicial: Desactivados
+		btnAceptar.setEnabled(false);
+		btnDenegar.setEnabled(false);
+
+		// 2. Listener para detectar selección en la tabla
+		tablaGestion.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				// Evitar eventos duplicados (solo actuar cuando termina la selección)
+				if (!e.getValueIsAdjusting()) {
+					boolean hayFilaSeleccionada = tablaGestion.getSelectedRow() != -1;
+					
+					// Activar o desactivar según si hay fila seleccionada
+					btnAceptar.setEnabled(hayFilaSeleccionada);
+					btnDenegar.setEnabled(hayFilaSeleccionada);
+				}
+			}
+		});
+
 		panelBotones.add(btnCrear);
-		panelBotones.add(Box.createHorizontalStrut(30)); // Espacio separador
+		panelBotones.add(Box.createHorizontalStrut(30)); 
 		panelBotones.add(btnAceptar);
 		panelBotones.add(btnDenegar);
 
@@ -134,12 +143,11 @@ public class GestionarReuniones extends JFrame {
 		return tablaGestion;
 	}
 
-	// Método útil para obtener el ID de la reunión seleccionada
 	public Integer getIdReunionSeleccionada() {
 		int fila = tablaGestion.getSelectedRow();
 		if (fila == -1)
 			return null;
-		// Asumiendo que el ID está en la columna 0
+		
 		Object id = modeloGestion.getValueAt(fila, 0);
 		if (id instanceof Integer)
 			return (Integer) id;
