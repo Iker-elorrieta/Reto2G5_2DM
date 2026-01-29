@@ -70,7 +70,7 @@ public class EnviarDatos {
 	public ArrayList<Horarios> datosHorarios(Users user) {
 		try {
 			oos.writeObject("CONSEGUIR_HORARIOS");
-			oos.write(user.getId());
+			oos.writeObject(user.getId());
 			oos.flush();
 
 			String json = (String) ois.readObject();
