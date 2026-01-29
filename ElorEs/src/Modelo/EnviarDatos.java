@@ -108,4 +108,23 @@ public class EnviarDatos {
 
 		}
 	}
+
+	public ArrayList<Reuniones> datosReuniones(Users user) { // <--- CAMBIADO A REUNIONES
+	    try {
+	        oos.writeObject("CONSEGUIR_REUNIONES");
+	        oos.writeObject(user.getId());
+	        oos.flush();
+	        
+	        String json = (String) ois.readObject();
+	        
+	        Type listType = new TypeToken<ArrayList<Reuniones>>() {}.getType(); 
+	        ArrayList<Reuniones> listaReuniones = gson.fromJson(json, listType);
+	        
+	        return listaReuniones;
+	        
+	    } catch (Exception e) { 
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
 }
