@@ -127,4 +127,21 @@ public class EnviarDatos {
 	        return null;
 	    }
 	}
+
+	public boolean actualizarEstadoReunion(Integer idSeleccionado, String estado) {
+		try {
+			oos.writeObject("ACTUALIZAR_ESTADO_REUNION");
+			oos.writeObject(idSeleccionado);
+			oos.writeObject(estado);
+			oos.flush();
+			
+			boolean actualizarEstado = (boolean) ois.readObject();
+			return actualizarEstado;
+		} catch (IOException | ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
 }

@@ -111,6 +111,19 @@ public class HiloServidor extends Thread {
 					oos.writeObject(respuestaReuniones);
 					oos.flush();
 					break;
+					
+				case "ACTUALIZAR_ESTADO_REUNION": // CORREGIDO
+					System.out.println("Procesando ACTUALIZAR_ESTADO_REUNION...");
+					int idReunion = (int) ois.readObject(); 
+					String estadoNuevo = (String) ois.readObject();
+					
+					System.out.println("ID Reunion: " + idReunion + " | Nuevo Estado: " + estadoNuevo);
+					
+					boolean actualizada = metodos.actualizarEstadoReunion(idReunion, estadoNuevo);
+					
+					oos.writeObject(actualizada);
+					oos.flush();
+					break;
 
 				default:
 					System.out.println("Comando desconocido: " + comando);

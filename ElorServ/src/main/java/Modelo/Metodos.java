@@ -1,6 +1,5 @@
 package Modelo;
 
-
 import java.security.MessageDigest;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -226,7 +225,6 @@ public class Metodos {
 		return json;
 	}
 
-
 	public String obtenerProfesores() {
 
 		Session session = sessionFactory.openSession();
@@ -288,7 +286,7 @@ public class Metodos {
 			existingUser.setTipos(user.getTipos());
 			existingUser.setEmail(user.getEmail());
 			existingUser.setUsername(user.getUsername());
-			if(user.getPassword() != null && !user.getPassword().isEmpty()) {
+			if (user.getPassword() != null && !user.getPassword().isEmpty()) {
 				existingUser.setPassword(user.getPassword());
 			} else {
 				existingUser.setPassword(existingUser.getPassword()); // Keep existing password
@@ -345,36 +343,77 @@ public class Metodos {
 	}
 
 	public String obtenerReuniones(Integer id) {
-	    String json = null;
-	    
-	    try (Session session = sessionFactory.openSession()) {
-	    	String hql = "FROM Reuniones r " +
-                    "JOIN FETCH r.usersByAlumnoId alumno " +
-                    "JOIN FETCH r.usersByProfesorId profesor " +
-                    "JOIN FETCH alumno.tipos " +
-                    "JOIN FETCH profesor.tipos " +
-                    "WHERE r.usersByProfesorId.id = :userId " +
-                    "OR r.usersByAlumnoId.id = :userId " +
-                    "ORDER BY r.fecha ASC";
-	        
-	        Query<Reuniones> query = session.createQuery(hql, Reuniones.class);
-	        query.setParameter("userId", id);
-	        
-	        List<Reuniones> reuniones = query.list();
-	        json = crearJson(reuniones);
-	        
-	        if (reuniones.isEmpty()) {
-	            return "[]"; 
-	        }
-	        
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return null;
-	    }
-	    
-	    return json;
+		String json = null;
+
+		try (Session session = sessionFactory.openSession()) {
+			String hql = "FROM Reuniones r " + "JOIN FETCH r.usersByAlumnoId alumno "
+					+ "JOIN FETCH r.usersByProfesorId profesor " + "JOIN FETCH alumno.tipos "
+					+ "JOIN FETCH profesor.tipos " + "WHERE r.usersByProfesorId.id = :userId "
+					+ "OR r.usersByAlumnoId.id = :userId " + "ORDER BY r.fecha ASC";
+
+			Query<Reuniones> query = session.createQuery(hql, Reuniones.class);
+			query.setParameter("userId", id);
+
+			List<Reuniones> reuniones = query.list();
+			json = crearJson(reuniones);
+
+			if (reuniones.isEmpty()) {
+				return "[]";
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		return json;
 	}
 
-	
+	public boolean actualizarEstadoReunion(int idReunion, String estadoNuevo) {
+	    Session session = sessionFactory.openSession();
+	    try {
+	        session.beginTransaction();
 
+	        // 1. Obtener la reunión por ID
+	        Reuniones reunion = session.get(Reuniones.class, idReunion);
+
+	        if (reunion == null) {
+	            return false;
+	        }
+
+	        // 2. Actualizar estados
+	        reunion.setEstado(estadoNuevo);
+	        reunion.setEstadoEus(traducirEstado(estadoNuevo)); // Asegúrate de tener el método traducirEstado
+
+	        // 3. CORRECCIÓN TIMESTAMP: Convertimos la fecha actual a formato SQL
+	        long now = System.currentTimeMillis();
+	        reunion.setUpdatedAt(new java.sql.Timestamp(now));
+
+	        // 4. Guardar
+	        session.merge(reunion);
+	        session.getTransaction().commit();
+	        return true;
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        if (session.getTransaction() != null) {
+	            session.getTransaction().rollback();
+	        }
+	        return false;
+	    } finally {
+	        session.close();
+	    }
+	}
+
+	// Método auxiliar para traducir estados automáticamente
+	private String traducirEstado(String estadoEs) {
+	    if (estadoEs == null) return "";
+	    switch (estadoEs.toUpperCase()) {
+	        case "PENDIENTE": return "ZAIN";
+	        case "ACEPTADA": return "ONARTUTA";
+	        case "DENEGADA": return "EZEZTATUTA"; // O "EZEZTATUTA"
+	        case "CANCELADA": return "BERTAN BEHERA";
+	        default: return estadoEs; // Si no hay traducción, devuelve el mismo
+	    }
+	}
 }

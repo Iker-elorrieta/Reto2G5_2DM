@@ -19,16 +19,11 @@ public class HibernateUtil {
     private SessionFactory buildSessionFactory(Environment env) {
         try {
             System.out.println("=== CONSTRUYENDO SESSION FACTORY ===");
-            
-            // Valores por defecto
-            String defaultUrl = "jdbc:mysql://localhost:3306/eduelorrieta";
-            String defaultUser = "root";
-            String defaultPass = "";
 
             // Leer variables de entorno
-            String url = env.getProperty("DB_URL", defaultUrl);
-            String user = env.getProperty("DB_USER", defaultUser);
-            String password = env.getProperty("DB_PASSWORD", defaultPass);
+            String url = env.getProperty("datasource.url");
+            String user = env.getProperty("datasource.user");
+            String password = env.getProperty("datasource.password");
 
             System.out.println("URL: " + url);
             System.out.println("User: " + user);

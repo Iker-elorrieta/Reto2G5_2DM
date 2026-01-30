@@ -2,7 +2,7 @@ package Controlador;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDateTime; // Usamos esto en vez de Calendar
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public class ControladorReuniones implements ActionListener {
             e.printStackTrace();
         }
         mostrarHorarioYReuniones();
-        ventana.setVisible(true); // Hacemos visible al final
+        ventana.setVisible(true);
     }
 
     public void iniciarReuniones() {
@@ -92,7 +92,7 @@ public class ControladorReuniones implements ActionListener {
                     String value = h.getModulos().getNombre();
                     if (h.getAula() != null) value += " (" + h.getAula() + ")";
                     
-                    // Si hay solapamiento de clases
+                    // Si hay solapamiento de clases (dos clases misma hora)
                     String current = (String) modelo.getValueAt(row, col);
                     if (current != null && !current.isEmpty()) {
                         value = current + " / " + value;
@@ -102,8 +102,7 @@ public class ControladorReuniones implements ActionListener {
             }
         }
 
-        // 4. PINTAR REUNIONES (SIN CALENDAR)
-     // --- 4. PINTAR REUNIONES (SIN CALENDAR) ---
+        // --- 4. PINTAR REUNIONES (LÓGICA MODIFICADA) ---
         if (reuniones != null) {
             for (Modelo.Reuniones r : reuniones) {
                 if (r.getFecha() == null) continue;
@@ -123,25 +122,32 @@ public class ControladorReuniones implements ActionListener {
                     
                     String contenidoClase = (String) modelo.getValueAt(row, col);
                     String asuntoReunion = (r.getAsunto() != null) ? r.getAsunto() : "Sin Asunto";
+                    String estado = (r.getEstado() != null) ? r.getEstado().toUpperCase() : "PENDIENTE";
                     
                     // --- LÓGICA DE PRIORIDAD Y VISUALIZACIÓN ---
                     
+                    // Verificamos si hay clase en esa celda
                     if (contenidoClase != null && !contenidoClase.isEmpty()) {
-                        // CASO 1: CONFLICTO (Muestra Reunión Y Clase)
-                        // Usamos HTML para que se vea en dos líneas
-                        String textoConflicto = "<html><center>"
-                                + "<b>CONFLICTO</b><br>"     // Negrita
-                                + "R: " + asuntoReunion + "<br>" // Nombre reunión
-                                + "C: " + contenidoClase         // Nombre clase
-                                + "</center></html>";
                         
-                        modelo.setValueAt(textoConflicto, row, col);
+                        // CASO 1: HAY CLASE Y ESTÁ PENDIENTE -> CONFLICTO
+                        if (estado.equals("PENDIENTE") || estado.equals("ZAIN")) {
+                            
+                            String textoConflicto = "<html><center>"
+                                    + "<b>CONFLICTO</b><br>"
+                                    + "R: " + asuntoReunion + "<br>"
+                                    + "C: " + contenidoClase
+                                    + "</center></html>";
+                            
+                            modelo.setValueAt(textoConflicto, row, col);
+                            
+                        } else {
+                            // CASO 2: HAY CLASE PERO ESTÁ ACEPTADA/DENEGADA
+                            // Mostramos el estado de la reunión (Tiene prioridad visual sobre la clase)
+                            modelo.setValueAt(estado + ": " + asuntoReunion, row, col);
+                        }
                         
                     } else {
-                        // CASO 2: NO HAY CLASE (Solo muestra Reunión)
-                        String estado = (r.getEstado() != null) ? r.getEstado().toUpperCase() : "PENDIENTE";
-                        
-                        // Formato simple: "ESTADO: Asunto"
+                        // CASO 3: NO HAY CLASE (Solo muestra Reunión)
                         modelo.setValueAt(estado + ": " + asuntoReunion, row, col);
                     }
                 }
