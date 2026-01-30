@@ -25,6 +25,7 @@ public class GestionarReuniones extends JFrame {
     private JButton btnDenegar;
 
 	public GestionarReuniones(ControladorGestionarReuniones controlador) {
+        setTitle("ElorEs - Gestión de Reuniones");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 900, 500); 
 		contentPane = new JPanel(new BorderLayout());

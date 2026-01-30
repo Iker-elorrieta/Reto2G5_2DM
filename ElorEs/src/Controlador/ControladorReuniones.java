@@ -53,7 +53,7 @@ public class ControladorReuniones implements ActionListener {
             break;
         case "IR_GESTION_REUNIONES":
             ventana.setVisible(false);
-            ControladorGestionarReuniones controladorGestion = new ControladorGestionarReuniones(user, ventana);
+            ControladorGestionarReuniones controladorGestion = new ControladorGestionarReuniones(user);
             controladorGestion.iniciarGestionarReuniones();
             break;
         }

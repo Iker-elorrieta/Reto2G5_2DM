@@ -16,6 +16,7 @@ public class CrearReuniones extends JFrame {
 	 * Create the frame.
 	 */
 	public CrearReuniones() {
+        setTitle("ElorEs - Crear Reuniones");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();

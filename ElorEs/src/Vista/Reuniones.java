@@ -21,6 +21,7 @@ public class Reuniones extends JFrame {
     private static final int HORAS = 6;
 
     public Reuniones(ControladorReuniones controlador) {
+        setTitle("ElorEs - Reuniones");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 900, 500);
         contentPane = new JPanel(new BorderLayout());

@@ -1,6 +1,5 @@
 package Controlador;
 
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
@@ -16,14 +15,12 @@ import Vista.GestionarReuniones;
 
 public class ControladorGestionarReuniones implements ActionListener {
 
-	private Window previousWindow;
 	private Users user;
 	private GestionarReuniones ventana;
 	private EnviarDatos enviarDatos = null;
 	private SocketCliente socketCliente;
 
-	public ControladorGestionarReuniones(Users user, Window previousWindow) {
-		this.previousWindow = previousWindow;
+	public ControladorGestionarReuniones(Users user) {
 		this.user = user;
 
 		// 1. Inicializamos conexión
@@ -53,13 +50,8 @@ public class ControladorGestionarReuniones implements ActionListener {
 		switch (comando) {
 		case "VOLVER":
 			ventana.dispose();
-			if (previousWindow != null) {
-				previousWindow.setVisible(true);
-				// Opcional: Si es el calendario, podrías querer refrescarlo
-				if (previousWindow instanceof Vista.Reuniones) {
-					// Podrías llamar a un método de refresco si existiera
-				}
-			}
+			ControladorReuniones controladorReuniones = new ControladorReuniones(user);
+			controladorReuniones.iniciarReuniones();
 			break;
 
 		case "ACEPTAR_REUNION": // Coincide con btnAceptar en Vista
