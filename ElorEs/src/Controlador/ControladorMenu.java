@@ -52,7 +52,7 @@ public class ControladorMenu implements ActionListener {
 			break;
 
 		case "REUNIONES":
-			ControladorReuniones reunionesCtrl = new ControladorReuniones();
+			ControladorReuniones reunionesCtrl = new ControladorReuniones(user);
 			reunionesCtrl.iniciarReuniones();
 			menu.setVisible(false);
 			break;

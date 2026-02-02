@@ -70,7 +70,7 @@ public class EnviarDatos {
 	public ArrayList<Horarios> datosHorarios(Users user) {
 		try {
 			oos.writeObject("CONSEGUIR_HORARIOS");
-			oos.write(user.getId());
+			oos.writeObject(user.getId());
 			oos.flush();
 
 			String json = (String) ois.readObject();
@@ -107,5 +107,60 @@ public class EnviarDatos {
 			return null;
 
 		}
+	}
+
+	public ArrayList<Reuniones> datosReuniones(Users user) { // <--- CAMBIADO A REUNIONES
+		try {
+			oos.writeObject("CONSEGUIR_REUNIONES");
+			oos.writeObject(user.getId());
+			oos.flush();
+
+			String json = (String) ois.readObject();
+
+			Type listType = new TypeToken<ArrayList<Reuniones>>() {
+			}.getType();
+			ArrayList<Reuniones> listaReuniones = gson.fromJson(json, listType);
+
+			return listaReuniones;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public boolean actualizarEstadoReunion(Integer idSeleccionado, String estado) {
+		try {
+			oos.writeObject("ACTUALIZAR_ESTADO_REUNION");
+			oos.writeObject(idSeleccionado);
+			oos.writeObject(estado);
+			oos.flush();
+
+			boolean actualizarEstado = (boolean) ois.readObject();
+			return actualizarEstado;
+		} catch (IOException | ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+
+	}
+
+	public boolean crearReunion(Reuniones nuevaReunion) {
+
+		try {
+			oos.writeObject("CREAR_REUNION");
+			String jsonReunion = gson.toJson(nuevaReunion);
+			oos.writeObject(jsonReunion);
+			oos.flush();
+
+			boolean crearReunion = (boolean) ois.readObject();
+			return crearReunion;
+		} catch (IOException | ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+
 	}
 }

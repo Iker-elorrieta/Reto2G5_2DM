@@ -1,10 +1,10 @@
 package Socket;
 
-import java.util.Properties;
-
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -16,31 +16,44 @@ public class HibernateUtil {
         this.sessionFactory = buildSessionFactory(env);
     }
 
-    private static SessionFactory buildSessionFactory(Environment env) {
+    private SessionFactory buildSessionFactory(Environment env) {
         try {
-            // fallback values
-            String defaultUrl = "jdbc:mysql://localhost:3306/eduelorrieta";
-            String defaultUser = "root";
-            String defaultPass = "";
+            System.out.println("=== CONSTRUYENDO SESSION FACTORY ===");
 
-            // coger envs o fallback
-            String url = env.getProperty("db_url", defaultUrl);
-            String user = env.getProperty("db_user", defaultUser);
-            String password = env.getProperty("db_password", defaultPass);
+            // Leer variables de entorno
+            String url = env.getProperty("datasource.url");
+            String user = env.getProperty("datasource.user");
+            String password = env.getProperty("datasource.password");
 
-            Properties props = new Properties();
-            props.put("hibernate.connection.url", url);
-            props.put("hibernate.connection.username", user);
-            props.put("hibernate.connection.password", password);
+            System.out.println("URL: " + url);
+            System.out.println("User: " + user);
 
-            return new Configuration()
-                    .configure() // hibernate.cfg.xml
-                    .addProperties(props)
-                    .buildSessionFactory(new StandardServiceRegistryBuilder()
-                            .configure("hibernate.cfg.xml").build());
+            // Crear el registro de servicios con las propiedades
+            StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
+            registryBuilder.configure("hibernate.cfg.xml"); // Carga el cfg.xml
+            
+            // Sobrescribir propiedades de conexión
+            registryBuilder.applySetting("hibernate.connection.url", url);
+            registryBuilder.applySetting("hibernate.connection.username", user);
+            registryBuilder.applySetting("hibernate.connection.password", password);
+            
+            StandardServiceRegistry registry = registryBuilder.build();
+            
+            System.out.println("Registry construido");
+
+            // Crear el SessionFactory desde el registry
+            MetadataSources sources = new MetadataSources(registry);
+            Metadata metadata = sources.getMetadataBuilder().build();
+            
+            SessionFactory sf = metadata.getSessionFactoryBuilder().build();
+            
+            System.out.println("SessionFactory creado exitosamente");
+            
+            return sf;
 
         } catch (Throwable ex) {
-            System.err.println("Initial SessionFactory creation failed: " + ex);
+            System.err.println("Error creando SessionFactory:");
+            ex.printStackTrace();
             throw new ExceptionInInitializerError(ex);
         }
     }

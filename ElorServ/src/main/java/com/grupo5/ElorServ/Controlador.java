@@ -41,7 +41,7 @@ public class Controlador {
     @GetMapping("/centros")
     public ResponseEntity<String> getCentros() {
         try {
-            File file = new File("EuskadiLatLon.json");
+            File file = new File("src/main/resources/EuskadiLatLon.json");
             return ResponseEntity.ok(Files.readString(file.toPath()));
         } catch (IOException e) {
             e.printStackTrace();
