@@ -416,4 +416,24 @@ public class Metodos {
 	        default: return estadoEs; // Si no hay traducción, devuelve el mismo
 	    }
 	}
+
+	public boolean crearReunion(String reunionJson) {
+		Session session = sessionFactory.openSession();
+	    try {
+	        Reuniones nuevaReunion = gson.fromJson(reunionJson, Reuniones.class);
+
+	        session.beginTransaction();
+	        session.persist(nuevaReunion);
+	        session.getTransaction().commit();
+	        return true;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        if (session.getTransaction() != null) {
+	            session.getTransaction().rollback();
+	        }
+	        return false;
+	    } finally {
+	        session.close();
+	    }
+	}
 }

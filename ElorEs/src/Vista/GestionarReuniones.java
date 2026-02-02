@@ -20,7 +20,6 @@ public class GestionarReuniones extends JFrame {
     
     // Botones
     private JButton btnVolver;
-    private JButton btnCrear;
     private JButton btnAceptar;
     private JButton btnDenegar;
 
@@ -89,12 +88,6 @@ public class GestionarReuniones extends JFrame {
 		JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
 		Estilos.body(panelBotones); 
 
-		btnCrear = new JButton("Nueva Reunión (+)");
-		Estilos.botonPrimario(btnCrear);
-		btnCrear.setBackground(new Color(46, 139, 87)); 
-		btnCrear.setActionCommand("NUEVA_REUNION");
-		btnCrear.addActionListener(controlador);
-
 		btnAceptar = new JButton("Aceptar Solicitud");
 		Estilos.botonPrimario(btnAceptar);
 		btnAceptar.setActionCommand("ACEPTAR_REUNION");
@@ -127,8 +120,6 @@ public class GestionarReuniones extends JFrame {
 			}
 		});
 
-		panelBotones.add(btnCrear);
-		panelBotones.add(Box.createHorizontalStrut(30)); 
 		panelBotones.add(btnAceptar);
 		panelBotones.add(btnDenegar);
 

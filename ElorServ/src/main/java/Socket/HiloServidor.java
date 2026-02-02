@@ -124,6 +124,16 @@ public class HiloServidor extends Thread {
 					oos.writeObject(actualizada);
 					oos.flush();
 					break;
+				case "CREAR_REUNION":
+					String reunionJson = (String) ois.readObject();
+					System.out.println("CREAR_REUNION - Datos recibidos: " + reunionJson);
+
+					boolean creada = metodos.crearReunion(reunionJson);
+					System.out.println("CREAR_REUNION - Resultado: " + (creada ? "Éxito" : "Fallo"));
+
+					oos.writeObject(creada);
+					oos.flush();
+					break;
 
 				default:
 					System.out.println("Comando desconocido: " + comando);

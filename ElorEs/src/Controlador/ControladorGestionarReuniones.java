@@ -54,17 +54,12 @@ public class ControladorGestionarReuniones implements ActionListener {
 			controladorReuniones.iniciarReuniones();
 			break;
 
-		case "ACEPTAR_REUNION": // Coincide con btnAceptar en Vista
+		case "ACEPTAR_REUNION":
 			aceptarReunion();
 			break;
 
-		case "DENEGAR_REUNION": // Coincide con btnDenegar en Vista
+		case "DENEGAR_REUNION":
 			denegarReunion();
-			break;
-
-		case "NUEVA_REUNION": // Coincide con btnCrear en Vista
-			// Aquí iría la lógica para abrir ventana de crear
-			JOptionPane.showMessageDialog(ventana, "Funcionalidad de Crear Reunión pendiente.");
 			break;
 		}
 	}
@@ -89,28 +84,26 @@ public class ControladorGestionarReuniones implements ActionListener {
 				// Evitar NullPointerExceptions si faltan datos
 				String fechaStr = (r.getFecha() != null) ? sdf.format(r.getFecha()) : "Sin fecha";
 
-				// Obtener nombres seguros (asumiendo que Users tiene getNombre y getApellidos)
+				// Obtener nombres seguros
 				String nombreSolicitante = "Desconocido";
 				if (r.getUsersByAlumnoId() != null) {
 					nombreSolicitante = r.getUsersByAlumnoId().getNombre() + " "
 							+ r.getUsersByAlumnoId().getApellidos();
-				} else if (r.getUsersByProfesorId() != null && user.getId() != r.getUsersByProfesorId().getId()) {
-					// Si yo soy el alumno, el solicitante podría ser el profesor en algunos casos,
-					// depende de tu lógica
 				}
 
 				String nombreProfesor = (r.getUsersByProfesorId() != null)
 						? r.getUsersByProfesorId().getNombre() + " " + r.getUsersByProfesorId().getApellidos()
 						: "Sin asignar";
 
-				Object[] fila = { r.getIdReunion(), // ID (Columna 0)
-						r.getTitulo(), // Título
-						r.getAsunto(), // Asunto
-						nombreSolicitante, // Solicitante (Alumno)
-						nombreProfesor, // Profesor
-						fechaStr, // Fecha formateada
-						r.getAula(), // Aula
-						r.getEstado() // Estado
+				Object[] fila = { 
+					r.getIdReunion(), // ID (Columna 0)
+					r.getTitulo(), // Título
+					r.getAsunto(), // Asunto
+					nombreSolicitante, // Solicitante (Alumno)
+					nombreProfesor, // Profesor
+					fechaStr, // Fecha formateada
+					r.getAula(), // Aula
+					r.getEstado() // Estado
 				};
 
 				modelo.addRow(fila);
@@ -118,17 +111,35 @@ public class ControladorGestionarReuniones implements ActionListener {
 		}
 	}
 
-	// Métodos placeholder para las acciones
 	private void aceptarReunion() {
 		Integer idSeleccionado = ventana.getIdReunionSeleccionada();
 		if (idSeleccionado == null) {
 			JOptionPane.showMessageDialog(ventana, "Selecciona una reunión para aceptar.");
 			return;
 		}
+
+		// Obtener el estado actual de la reunión seleccionada
+		String estadoActual = obtenerEstadoReunion(idSeleccionado);
+		
+		// Validar que el estado sea PENDIENTE
+		if (estadoActual == null || !estadoActual.equalsIgnoreCase("PENDIENTE")) {
+			JOptionPane.showMessageDialog(ventana, 
+				"Solo se pueden aceptar reuniones en estado PENDIENTE.\nEstado actual: " + estadoActual,
+				"Acción no permitida",
+				JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+
 		System.out.println("Aceptando reunión ID: " + idSeleccionado);
 		boolean actualizarReunion = enviarDatos.actualizarEstadoReunion(idSeleccionado, "ACEPTADA");
-		System.out.println("Reunión aceptada: " + actualizarReunion);
-		mostrarReuniones(); // Refrescar tabla
+		
+		if (actualizarReunion) {
+			JOptionPane.showMessageDialog(ventana, "Reunión aceptada correctamente.");
+			System.out.println("Reunión aceptada: " + actualizarReunion);
+			mostrarReuniones(); // Refrescar tabla
+		} else {
+			JOptionPane.showMessageDialog(ventana, "Error al aceptar la reunión.", "Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	private void denegarReunion() {
@@ -137,9 +148,46 @@ public class ControladorGestionarReuniones implements ActionListener {
 			JOptionPane.showMessageDialog(ventana, "Selecciona una reunión para denegar.");
 			return;
 		}
+
+		// Obtener el estado actual de la reunión seleccionada
+		String estadoActual = obtenerEstadoReunion(idSeleccionado);
+		
+		// Validar que el estado sea PENDIENTE
+		if (estadoActual == null || !estadoActual.equalsIgnoreCase("PENDIENTE")) {
+			JOptionPane.showMessageDialog(ventana, 
+				"Solo se pueden denegar reuniones en estado PENDIENTE.\nEstado actual: " + estadoActual,
+				"Acción no permitida",
+				JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+
 		System.out.println("Denegando reunión ID: " + idSeleccionado);
 		boolean actualizarReunion = enviarDatos.actualizarEstadoReunion(idSeleccionado, "DENEGADA");
-		System.out.println("Reunión denegada: " + actualizarReunion);
-		mostrarReuniones();
+		
+		if (actualizarReunion) {
+			JOptionPane.showMessageDialog(ventana, "Reunión denegada correctamente.");
+			System.out.println("Reunión denegada: " + actualizarReunion);
+			mostrarReuniones(); // Refrescar tabla
+		} else {
+			JOptionPane.showMessageDialog(ventana, "Error al denegar la reunión.", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	/**
+	 * Obtiene el estado actual de una reunión desde la tabla
+	 */
+	private String obtenerEstadoReunion(Integer idReunion) {
+		DefaultTableModel modelo = ventana.getModeloGestion();
+		
+		for (int i = 0; i < modelo.getRowCount(); i++) {
+			Object id = modelo.getValueAt(i, 0); // Columna 0 = ID
+			
+			if (id != null && id.toString().equals(idReunion.toString())) {
+				Object estado = modelo.getValueAt(i, 7); // Columna 7 = Estado
+				return (estado != null) ? estado.toString() : null;
+			}
+		}
+		
+		return null;
 	}
 }
