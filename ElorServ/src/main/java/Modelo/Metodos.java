@@ -409,10 +409,10 @@ public class Metodos {
 	private String traducirEstado(String estadoEs) {
 	    if (estadoEs == null) return "";
 	    switch (estadoEs.toUpperCase()) {
-	        case "PENDIENTE": return "ZAIN";
+	        case "PENDIENTE": return "ONARTZEKE";
 	        case "ACEPTADA": return "ONARTUTA";
 	        case "DENEGADA": return "EZEZTATUTA"; // O "EZEZTATUTA"
-	        case "CANCELADA": return "BERTAN BEHERA";
+	        case "CANCELADA": return "GATAZKA";
 	        default: return estadoEs; // Si no hay traducción, devuelve el mismo
 	    }
 	}
